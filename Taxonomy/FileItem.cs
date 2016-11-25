@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TaxonomyLib
+namespace Taxonomy
 {
-    public class Class1
-    {
-    }
+	public class FileItem
+	{
+	}
 }
