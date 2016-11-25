@@ -9,8 +9,8 @@ namespace TaxonomyLib
 {
 	public class File
 	{
-		public byte[] Hash { get; }
-
+		public byte[] Hash { get; internal set; }
+		internal long Id { get; set; }
 		public string AbsolutePath => Path.Combine(RootPath, RelativePath);
 
 		private string relativePath;
@@ -25,15 +25,6 @@ namespace TaxonomyLib
 		}
 
 		private string RootPath { get; }
-
-		private void UpdateHash()
-		{
-			using (var sha512 = new SHA512Managed())
-			using (var file = IO.File.Open(AbsolutePath, IO.FileMode.Open))
-			{
-				var newFileHash = sha512.ComputeHash(file);
-			}
-		}
 
 		public bool UpdateLocation(string newPath)
 		{
@@ -53,14 +44,26 @@ namespace TaxonomyLib
 
 		public ICollection<Tag> Tags { get; }
 
-		internal File(string rootPath, string path)
+		internal File(long id, string rootPath, string path, ICollection<Tag> tagCollection, byte[] hash = null)
 		{
 			RootPath = rootPath;
 			if(Path.IsPathRooted(path))
 				RelativePath = path;
 			else
 				RelativePath = Path.Combine(rootPath, path);
-			Tags = new List<Tag>();
+			Tags = tagCollection;
+			if(hash != null)
+			{
+				Hash = hash;
+			}
+			else
+			{
+				using (var sha512 = new SHA512Managed())
+				using (var file = IO.File.Open(AbsolutePath, IO.FileMode.Open))
+				{
+					Hash = sha512.ComputeHash(file);
+				}
+			}
 		}
 	}
 }

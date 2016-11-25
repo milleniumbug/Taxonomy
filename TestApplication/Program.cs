@@ -11,14 +11,15 @@ namespace TestApplication
 	{
 		static void Main(string[] args)
 		{
-			using(var taxonomy = Taxonomy.CreateNew(@"F:\mietczynski_masochista\test"))
+			using(var taxonomy = Taxonomy.CreateNew(@"F:\mietczynski_masochista\test.sql"))
 			{
 				var firstFile = taxonomy.AddFile(@"Masochista - niepoważna recenzja 'Gulczas, a jak myślisz... cz.1' [2_2]-nueuBBYtM9w.mp4");
-				var secondFile = taxonomy.AddFile(@"F:\mietczynski_masochista\1319481780_cat_spinning_a_pillow.webm");
+				var secondFile = taxonomy.AddFile(@"F:\1319481780_cat_spinning_a_pillow.webm");
 				var thirdFile =
 					taxonomy.AddFile(@"Masochista - niepoważna recenzja 'Gulczas, a jak myślisz... cz.1' [1_2]-8ZGabGISdlI.mp4");
-				var firstTag = taxonomy.AddTag(new Namespace("rodzaj"), new TagName("film"));
-				var secondTag = taxonomy.AddTag(new Namespace("rodzaj"), new TagName("ŚmieszneObrazki"));
+				var rodzaj = new Namespace("rodzaj");
+				var firstTag = taxonomy.AddTag(rodzaj, new TagName("film"));
+				var secondTag = taxonomy.AddTag(rodzaj, new TagName("ŚmieszneObrazki"));
 				firstFile.Tags.Add(firstTag);
 				thirdFile.Tags.Add(firstTag);
 				secondFile.Tags.Add(secondTag);
