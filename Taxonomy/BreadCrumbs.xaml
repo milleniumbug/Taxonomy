@@ -19,7 +19,9 @@
             Grid.Column="0"
             Grid.ColumnSpan="2"
             LostFocus="PathEditorLostFocus"
-            Text="{Binding Path}"
+            PreviewKeyDown="OnKeyPressedDown"
+            PreviewLostKeyboardFocus="OnLostFocusTextBox"
+            Text="{Binding Path, UpdateSourceTrigger=Explicit}"
             Visibility="{Binding Mode, Converter={x:Static taxonomy:ModeToVisibilityConverter.Default}, ConverterParameter={x:Static taxonomy:Mode.Editing}}" />
         <ItemsControl
             x:Name="ItemsControl"

@@ -87,6 +87,29 @@ namespace Taxonomy
 			Mode = Mode.Editing;
 		}
 
+		private void OnLostFocusTextBox(object sender, KeyboardFocusChangedEventArgs e)
+		{
+			var bindingExpression = BindingOperations.GetBindingExpression((TextBox)sender, TextBox.TextProperty);
+			bindingExpression?.UpdateTarget();
+			Mode = Mode.BreadCrumbs;
+		}
+
+
+		private void OnKeyPressedDown(object sender, KeyEventArgs e)
+		{
+			var bindingExpression = BindingOperations.GetBindingExpression((TextBox)sender, TextBox.TextProperty);
+			if (e.Key == Key.Enter)
+			{
+				bindingExpression?.UpdateSource();
+				Mode = Mode.BreadCrumbs;
+			}
+			if(e.Key == Key.Escape)
+			{
+				bindingExpression?.UpdateTarget();
+				Mode = Mode.BreadCrumbs;
+			}
+		}
+
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
