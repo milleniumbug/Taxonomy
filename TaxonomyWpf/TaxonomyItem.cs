@@ -30,7 +30,7 @@ namespace TaxonomyWpf
 		{
 			Path = path;
 			ShortName = shortName;
-			Taxonomy = new Lazy<Taxonomy>(() => new Taxonomy(path));
+			Taxonomy = new Lazy<TaxonomyLib.Taxonomy>(() => new TaxonomyLib.Taxonomy(path));
 		}
 	}
 

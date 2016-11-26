@@ -26,10 +26,13 @@ namespace TaxonomyWpf
 
 		public ICollection<TaxonomyItem> Taxonomies { get; }
 
+		public ICollection<NamespaceItem> Namespaces { get; }
+
 		public MainWindow()
 		{
 			Taxonomies = new ObservableCollection<TaxonomyItem>();
 			Taxonomies.Add(new TaxonomyItem(@"F:\mietczynski_masochista\test.sql", "sample taxonomy"));
+			Namespaces = new ObservableCollection<NamespaceItem>() {new NamespaceItem(new Namespace("kind"))};
 			InitializeComponent();
 		}
 

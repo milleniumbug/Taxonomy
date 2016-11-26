@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:TaxonomyWpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:taxonomyLib="clr-namespace:TaxonomyLib;assembly=TaxonomyLib"
     Title="MainWindow"
     DataContext="{Binding RelativeSource={RelativeSource Self}}"
     mc:Ignorable="d">
@@ -60,6 +61,16 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </Grid>
+            <TreeView Grid.Row="2" ItemsSource="{Binding Namespaces}">
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type local:NamespaceItem}" ItemsSource="{Binding Tags}">
+                        <TextBlock Text="{Binding Namespace.Component}" />
+                    </HierarchicalDataTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type taxonomyLib:TagName}">
+                        <TextBlock Text="{Binding Name}" />
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
+            </TreeView>
         </Grid>
         <Grid Grid.Row="0" Grid.Column="1">
             <Grid.RowDefinitions>
