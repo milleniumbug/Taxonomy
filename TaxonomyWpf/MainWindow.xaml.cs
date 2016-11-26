@@ -24,25 +24,22 @@ namespace TaxonomyWpf
 	{
 		public File File { get; }
 
-		public ICollection<Tuple<string, Lazy<TaxonomyLib.Taxonomy>>> Taxonomies { get; }
+		public ICollection<TaxonomyItem> Taxonomies { get; }
 
 		public MainWindow()
 		{
-			Taxonomies = new ObservableCollection<Tuple<string, Lazy<TaxonomyLib.Taxonomy>>>();
-			Taxonomies.Add(Tuple.Create(
-				"sample taxonomy",
-				new Lazy<TaxonomyLib.Taxonomy>(
-					() => new TaxonomyLib.Taxonomy(@"F:\mietczynski_masochista\test.sql"))));
+			Taxonomies = new ObservableCollection<TaxonomyItem>();
+			Taxonomies.Add(new TaxonomyItem(@"F:\mietczynski_masochista\test.sql", "sample taxonomy"));
 			InitializeComponent();
 		}
 
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);
-			foreach(var nameTaxonomyPair in Taxonomies)
+			foreach(var taxonomyItem in Taxonomies)
 			{
-				if(nameTaxonomyPair.Item2.IsValueCreated)
-					nameTaxonomyPair.Item2.Value.Dispose();
+				if(taxonomyItem.Taxonomy.IsValueCreated)
+					taxonomyItem.Taxonomy.Value.Dispose();
 			}
 			//Taxonomy.Dispose();
 		}
