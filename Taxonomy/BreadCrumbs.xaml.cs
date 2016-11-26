@@ -21,21 +21,44 @@ namespace Taxonomy
 	/// </summary>
 	public partial class BreadCrumbs : UserControl
 	{
-		public IList<string> Components { get; }
+		private ObservableCollection<string> Components { get; }
+
+		public string Path
+		{
+			get { return string.Join(System.IO.Path.DirectorySeparatorChar.ToString(), Components); }
+
+			set
+			{
+				Components.Clear();
+				Components.Add("This Computer");
+				foreach(var component in value.Split(System.IO.Path.DirectorySeparatorChar))
+				{
+					Components.Add(component);
+				}
+			}
+		}
 
 		public BreadCrumbs()
 		{
-			Components = new ObservableCollection<string> {"aaa", "bbb", "ccc"};
+			Components = new ObservableCollection<string>();
 			InitializeComponent();
+			ItemsControl.ItemsSource = Components;
+			Path = @"E:\PROJEKTY\Taxonomy\TaxonomyLib";
+		}
+
+		public BreadCrumbs(string path)
+		{
+			Path = path;
 		}
 
 		private void OnComponentClick(object sender, RoutedEventArgs e)
 		{
 			var tag = ((Button) sender).Tag;
-			var index = Components.IndexOf((string)tag);
-			for(int i = Components.Count - 1; i >= index + 1; i--)
+			var list = (IList<string>) Components;
+			var index = list.IndexOf((string)tag);
+			for(int i = list.Count - 1; i >= index + 1; i--)
 			{
-				Components.RemoveAt(i);
+				list.RemoveAt(i);
 			}
 		}
 	}
