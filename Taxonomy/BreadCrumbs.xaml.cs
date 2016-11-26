@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,29 +13,20 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using TaxonomyLib;
 
-namespace TaxonomyWpf
+namespace Taxonomy
 {
 	/// <summary>
-	/// Interaction logic for MainWindow.xaml
+	/// Interaction logic for BreadCrumbs.xaml
 	/// </summary>
-	public partial class MainWindow : Window
+	public partial class BreadCrumbs : UserControl
 	{
-		public File File { get; }
+		public IList<string> Components { get; }
 
-		private TaxonomyLib.Taxonomy Taxonomy { get; }
-
-		public MainWindow()
+		public BreadCrumbs()
 		{
-			Taxonomy = new TaxonomyLib.Taxonomy(@"F:\mietczynski_masochista\test.sql");
+			Components = new ObservableCollection<string> {"aaa", "bbb", "ccc"};
 			InitializeComponent();
-		}
-
-		protected override void OnClosed(EventArgs e)
-		{
-			base.OnClosed(e);
-			Taxonomy.Dispose();
 		}
 	}
 }

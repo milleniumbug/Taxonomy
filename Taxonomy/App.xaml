@@ -1,7 +1,7 @@
-﻿<Application x:Class="Taxonomy.App"
+﻿<Application x:Class="TaxonomyWpf.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Taxonomy"
+             xmlns:local="clr-namespace:TaxonomyWpf"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

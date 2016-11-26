@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Taxonomy.Properties
+namespace TaxonomyWpf.Properties
 {
 
 
