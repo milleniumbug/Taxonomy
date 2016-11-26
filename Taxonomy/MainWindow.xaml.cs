@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,18 +24,27 @@ namespace TaxonomyWpf
 	{
 		public File File { get; }
 
-		private TaxonomyLib.Taxonomy Taxonomy { get; }
+		public ICollection<Tuple<string, Lazy<TaxonomyLib.Taxonomy>>> Taxonomies { get; }
 
 		public MainWindow()
 		{
-			Taxonomy = new TaxonomyLib.Taxonomy(@"F:\mietczynski_masochista\test.sql");
+			Taxonomies = new ObservableCollection<Tuple<string, Lazy<TaxonomyLib.Taxonomy>>>();
+			Taxonomies.Add(Tuple.Create(
+				"sample taxonomy",
+				new Lazy<TaxonomyLib.Taxonomy>(
+					() => new TaxonomyLib.Taxonomy(@"F:\mietczynski_masochista\test.sql"))));
 			InitializeComponent();
 		}
 
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);
-			Taxonomy.Dispose();
+			foreach(var nameTaxonomyPair in Taxonomies)
+			{
+				if(nameTaxonomyPair.Item2.IsValueCreated)
+					nameTaxonomyPair.Item2.Value.Dispose();
+			}
+			//Taxonomy.Dispose();
 		}
 	}
 }

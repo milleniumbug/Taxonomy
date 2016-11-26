@@ -67,6 +67,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="TaxonomyItem.cs" />
     <Page Include="BreadCrumbs.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
