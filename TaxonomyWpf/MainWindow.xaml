@@ -80,15 +80,42 @@
             </Grid.RowDefinitions>
             <TextBox Grid.Row="0" />
             <local:BreadCrumbs Grid.Row="1" />
-            <ListView Grid.Row="2">
-                <ListBox.ItemTemplate>
+            <ItemsControl Grid.Row="2" ItemsSource="{Binding Files}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel>
-                            <TextBlock Text="Test" />
-                        </StackPanel>
+                        <Grid
+                            Width="80"
+                            Height="80"
+                            Margin="3,3,3,3">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Button Background="Transparent" BorderBrush="Transparent">
+                                <Button.InputBindings>
+                                    <MouseBinding Command="{Binding IconDoubleClick, RelativeSource={RelativeSource AncestorType=Window}}" Gesture="LeftDoubleClick" />
+                                </Button.InputBindings>
+                                <Button.Content>
+                                    <Image
+                                        Grid.Row="0"
+                                        Width="32"
+                                        Height="32"
+                                        Source="{Binding Icon}" />
+                                </Button.Content>
+                            </Button>
+                            <TextBlock
+                                Grid.Row="1"
+                                HorizontalAlignment="Center"
+                                Text="{Binding Name}" />
+                        </Grid>
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListView>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
     </Grid>
 </Window>

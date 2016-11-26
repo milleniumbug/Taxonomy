@@ -47,6 +47,7 @@
       <HintPath>..\packages\System.Data.SQLite.Linq.1.0.103\lib\net451\System.Data.SQLite.Linq.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Xml" />
@@ -69,6 +70,7 @@
     </ApplicationDefinition>
     <Compile Include="NamespaceItem.cs" />
     <Compile Include="TaxonomyItem.cs" />
+    <Compile Include="TrivialCommand.cs" />
     <Page Include="BreadCrumbs.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

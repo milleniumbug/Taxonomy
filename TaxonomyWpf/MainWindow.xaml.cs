@@ -28,11 +28,28 @@ namespace TaxonomyWpf
 
 		public ICollection<NamespaceItem> Namespaces { get; }
 
+		public ICollection<FileItem> Files { get; }
+
+		public int IconWidth => IconDimensions.Item1;
+
+		public int IconHeight => IconDimensions.Item2;
+
+		public Tuple<int, int> IconDimensions { get; }
+
+		public ICommand IconDoubleClick { get; }
+
 		public MainWindow()
 		{
+			IconDimensions = Tuple.Create(32, 32);
+			IconDoubleClick = new TrivialCommand<Button>(button => { });
 			Taxonomies = new ObservableCollection<TaxonomyItem>();
-			Taxonomies.Add(new TaxonomyItem(@"F:\mietczynski_masochista\test.sql", "sample taxonomy"));
+			Taxonomies.Add(new TaxonomyItem(@"C:\Windows\whatever", "sample taxonomy"));
 			Namespaces = new ObservableCollection<NamespaceItem>() {new NamespaceItem(new Namespace("kind"))};
+			Files = new ObservableCollection<FileItem>()
+			{
+				new FileItem(null, @"C:\Windows\regedit.exe"),
+				new FileItem(null, @"C:\Windows\notepad.exe")
+			};
 			InitializeComponent();
 		}
 
