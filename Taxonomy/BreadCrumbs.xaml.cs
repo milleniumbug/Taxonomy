@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,34 +19,51 @@ using System.Windows.Shapes;
 
 namespace Taxonomy
 {
+	public enum Mode
+	{
+		BreadCrumbs,
+		Editing
+	}
+
 	/// <summary>
 	/// Interaction logic for BreadCrumbs.xaml
 	/// </summary>
-	public partial class BreadCrumbs : UserControl
+	public partial class BreadCrumbs : UserControl, INotifyPropertyChanged
 	{
 		private ObservableCollection<string> Components { get; }
 
+		private Mode mode;
+
+		public Mode Mode
+		{
+			get { return mode; }
+			set { mode = value; OnPropertyChanged(); }
+		}
+
 		public string Path
 		{
-			get { return string.Join(System.IO.Path.DirectorySeparatorChar.ToString(), Components); }
+			get { return string.Join(System.IO.Path.DirectorySeparatorChar.ToString(), Components.Skip(1)); }
 
 			set
 			{
 				Components.Clear();
 				Components.Add("This Computer");
+				value = value.TrimEnd();
+				value = value.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()) ? value.Substring(0, value.Length-1) : value;
 				foreach(var component in value.Split(System.IO.Path.DirectorySeparatorChar))
 				{
 					Components.Add(component);
 				}
+				Mode = Mode.BreadCrumbs;
 			}
 		}
 
 		public BreadCrumbs()
 		{
 			Components = new ObservableCollection<string>();
+			Path = @"E:\PROJEKTY\Taxonomy\TaxonomyLib";
 			InitializeComponent();
 			ItemsControl.ItemsSource = Components;
-			Path = @"E:\PROJEKTY\Taxonomy\TaxonomyLib";
 		}
 
 		public BreadCrumbs(string path)
@@ -60,6 +80,40 @@ namespace Taxonomy
 			{
 				list.RemoveAt(i);
 			}
+		}
+
+		private void OnEditPathClick(object sender, RoutedEventArgs e)
+		{
+			Mode = Mode.Editing;
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		private void PathEditorLostFocus(object sender, RoutedEventArgs e)
+		{
+			Mode = Mode.BreadCrumbs;
+		}
+	}
+
+	public class ModeToVisibilityConverter : IValueConverter
+	{
+		public static readonly ModeToVisibilityConverter Default = new ModeToVisibilityConverter();
+
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var activeMode = (Mode) value;
+			var visibleMode = (Mode) parameter;
+			return activeMode == visibleMode ? Visibility.Visible : Visibility.Hidden;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TaxonomyWpf"
+             xmlns:taxonomy="clr-namespace:Taxonomy"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -12,7 +13,8 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <ItemsControl x:Name="ItemsControl" Grid.Column="0">
+        <TextBox LostFocus="PathEditorLostFocus" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Path}" Visibility="{Binding Mode, Converter={x:Static taxonomy:ModeToVisibilityConverter.Default}, ConverterParameter={x:Static taxonomy:Mode.Editing}}"/>
+        <ItemsControl x:Name="ItemsControl" Grid.Column="0" Visibility="{Binding Mode, Converter={x:Static taxonomy:ModeToVisibilityConverter.Default}, ConverterParameter={x:Static taxonomy:Mode.BreadCrumbs}}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" />
@@ -24,6 +26,6 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <Button Grid.Column="1" FocusVisualStyle="{x:Null}"/>
+        <Button Visibility="{Binding Mode, Converter={x:Static taxonomy:ModeToVisibilityConverter.Default}, ConverterParameter={x:Static taxonomy:Mode.BreadCrumbs}}" Grid.Column="1" FocusVisualStyle="{x:Null}" Click="OnEditPathClick"/>
     </Grid>
 </UserControl>
