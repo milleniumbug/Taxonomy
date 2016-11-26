@@ -28,5 +28,15 @@ namespace Taxonomy
 			Components = new ObservableCollection<string> {"aaa", "bbb", "ccc"};
 			InitializeComponent();
 		}
+
+		private void OnComponentClick(object sender, RoutedEventArgs e)
+		{
+			var tag = ((Button) sender).Tag;
+			var index = Components.IndexOf((string)tag);
+			for(int i = Components.Count - 1; i >= index + 1; i--)
+			{
+				Components.RemoveAt(i);
+			}
+		}
 	}
 }
