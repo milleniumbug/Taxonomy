@@ -55,6 +55,7 @@ namespace TaxonomyWpf
 					Components.Add(component);
 				}
 				Mode = Mode.BreadCrumbs;
+				OnPropertyChanged();
 			}
 		}
 

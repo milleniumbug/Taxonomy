@@ -88,31 +88,38 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid
-                            Width="80"
-                            Height="80"
-                            Margin="3,3,3,3">
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <Button Background="Transparent" BorderBrush="Transparent">
-                                <Button.InputBindings>
-                                    <MouseBinding Command="{Binding IconDoubleClick, RelativeSource={RelativeSource AncestorType=Window}}" Gesture="LeftDoubleClick" />
-                                </Button.InputBindings>
-                                <Button.Content>
+                        <Button
+                            Width="74"
+                            Height="53"
+                            Margin="3,3,3,3"
+                            Background="Transparent"
+                            BorderBrush="Transparent">
+                            <Button.InputBindings>
+                                <MouseBinding Command="{Binding IconDoubleClick, RelativeSource={RelativeSource AncestorType=Window}}" Gesture="LeftDoubleClick" />
+                            </Button.InputBindings>
+                            <Button.Content>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+
                                     <Image
                                         Grid.Row="0"
                                         Width="32"
                                         Height="32"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
                                         Source="{Binding Icon}" />
-                                </Button.Content>
-                            </Button>
-                            <TextBlock
-                                Grid.Row="1"
-                                HorizontalAlignment="Center"
-                                Text="{Binding Name}" />
-                        </Grid>
+
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding Name}" />
+                                </Grid>
+                            </Button.Content>
+                        </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

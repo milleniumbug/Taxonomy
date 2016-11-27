@@ -12,7 +12,7 @@ namespace TaxonomyWpf
 
 		public void Execute(object parameter)
 		{
-			command((T) parameter);
+			command((T)parameter);
 		}
 
 		public event EventHandler CanExecuteChanged;
@@ -23,5 +23,10 @@ namespace TaxonomyWpf
 		}
 
 		private readonly Action<T> command;
+
+		protected virtual void OnCanExecuteChanged()
+		{
+			CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+		}
 	}
 }
