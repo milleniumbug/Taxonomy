@@ -83,12 +83,8 @@
             </Grid.RowDefinitions>
             <xctk:WatermarkTextBox Grid.Row="0" Watermark="Search this directory" />
             <local:BreadCrumbs Grid.Row="1" />
-            <Grid Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <ItemsControl Grid.Column="0" ItemsSource="{Binding Files}">
+            <ScrollViewer Grid.Row="2">
+                <ItemsControl ItemsSource="{Binding Files}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal" />
@@ -135,9 +131,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <ScrollBar x:Name="FileScrollBar" Grid.Column="1" />
-            </Grid>
-
+            </ScrollViewer>
         </Grid>
     </Grid>
 </Window>
