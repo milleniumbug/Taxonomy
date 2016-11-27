@@ -93,9 +93,13 @@
                             Height="53"
                             Margin="3,3,3,3"
                             Background="Transparent"
-                            BorderBrush="Transparent">
+                            BorderBrush="Transparent"
+                            Tag="{Binding .}">
                             <Button.InputBindings>
-                                <MouseBinding Command="{Binding IconDoubleClick, RelativeSource={RelativeSource AncestorType=Window}}" Gesture="LeftDoubleClick" />
+                                <MouseBinding
+                                    Command="{Binding IconDoubleClick, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Button}}"
+                                    Gesture="LeftDoubleClick" />
                             </Button.InputBindings>
                             <Button.Content>
                                 <Grid>
