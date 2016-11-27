@@ -31,12 +31,13 @@ namespace TaxonomyWpf
 			Path = path;
 			icon = new Lazy<ImageSource>(() =>
 			{
-				//var extractedIcon = System.Drawing.Icon.ExtractAssociatedIcon(Path);
-				var extractedIcon = NativeExplorerInterface.GetIconForFile(Path);
-				return Imaging.CreateBitmapSourceFromHIcon(
-					extractedIcon.Handle,
-					Int32Rect.Empty,
-					BitmapSizeOptions.FromEmptyOptions());
+				using(var extractedIcon = NativeExplorerInterface.GetHIconForFile(Path))
+				{
+					return Imaging.CreateBitmapSourceFromHIcon(
+						extractedIcon.IconHandle,
+						Int32Rect.Empty,
+						BitmapSizeOptions.FromEmptyOptions());
+				}
 			});
 		}
 	}

@@ -33,7 +33,23 @@ namespace TaxonomyWpf
 		[DllImport("user32.dll")]
 		private static extern bool DestroyIcon(IntPtr handle);
 
-		public static Icon GetIconForFile(string path)
+		public class HIcon : IDisposable
+		{
+			public IntPtr IconHandle { get; private set; }
+
+			public void Dispose()
+			{
+				DestroyIcon(IconHandle);
+				IconHandle = IntPtr.Zero;
+			}
+
+			public HIcon(IntPtr iconHandle)
+			{
+				IconHandle = iconHandle;
+			}
+		}
+
+		public static HIcon GetHIconForFile(string path)
 		{
 			IntPtr hImg;
 			string fName = path;
@@ -46,12 +62,8 @@ namespace TaxonomyWpf
 				SHGFI_ICON | SHGFI_LARGEICON);
 
 			// TODO: "You should call this function from a background thread. Failure to do so could cause the UI to stop responding."
-			// TODO: If SHGetFileInfo returns an icon handle in the hIcon member of the SHFILEINFO structure pointed to by psfi, you are responsible for freeing it with DestroyIcon when you no longer need it.
 
-			Icon myIcon = System.Drawing.Icon.FromHandle(shinfo.hIcon);
-
-			//DestroyIcon(shinfo.hIcon);
-			return myIcon;
+			return new HIcon(shinfo.hIcon);
 		}
 	}
 }
