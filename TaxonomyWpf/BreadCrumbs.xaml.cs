@@ -88,8 +88,6 @@ namespace TaxonomyWpf
 		{
 			Mode = Mode.Editing;
 			EditPathTextBox.Focus();
-			EditPathTextBox.SelectionStart = 0;
-			EditPathTextBox.SelectionLength = EditPathTextBox.Text.Length;
 		}
 
 		private void OnLostFocusTextBox(object sender, KeyboardFocusChangedEventArgs e)

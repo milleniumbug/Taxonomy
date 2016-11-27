@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:TaxonomyWpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     d:DesignHeight="300"
     d:DesignWidth="300"
     DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -14,10 +15,12 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <TextBox
+        <xctk:AutoSelectTextBox
             x:Name="EditPathTextBox"
             Grid.Column="0"
             Grid.ColumnSpan="2"
+            AutoMoveFocus="False"
+            AutoSelectBehavior="OnFocus"
             LostFocus="PathEditorLostFocus"
             PreviewKeyDown="OnKeyPressedDown"
             PreviewLostKeyboardFocus="OnLostFocusTextBox"

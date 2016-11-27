@@ -49,6 +49,11 @@ namespace TaxonomyWpf
 			}
 		}
 
+		public static void OpenContextMenuForFile(string path)
+		{
+			
+		}
+
 		public static HIcon GetHIconForFile(string path)
 		{
 			IntPtr hImg;
