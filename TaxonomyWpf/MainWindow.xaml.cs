@@ -66,5 +66,11 @@ namespace TaxonomyWpf
 			}
 			//Taxonomy.Dispose();
 		}
+
+		private void OnRemoveTagClick(object sender, RoutedEventArgs e)
+		{
+			var taxonomyItem = (TaxonomyItem)(((Button) sender).Tag);
+			Taxonomies.Remove(taxonomyItem);
+		}
 	}
 }
