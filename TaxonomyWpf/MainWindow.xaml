@@ -80,53 +80,61 @@
             </Grid.RowDefinitions>
             <TextBox Grid.Row="0" />
             <local:BreadCrumbs Grid.Row="1" />
-            <ItemsControl Grid.Row="2" ItemsSource="{Binding Files}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button
-                            Width="74"
-                            Height="53"
-                            Margin="3,3,3,3"
-                            Background="Transparent"
-                            BorderBrush="Transparent"
-                            Tag="{Binding .}">
-                            <Button.InputBindings>
-                                <MouseBinding
-                                    Command="{Binding IconDoubleClick, RelativeSource={RelativeSource AncestorType=Window}}"
-                                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Button}}"
-                                    Gesture="LeftDoubleClick" />
-                            </Button.InputBindings>
-                            <Button.Content>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition />
-                                        <RowDefinition />
-                                    </Grid.RowDefinitions>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ItemsControl Grid.Column="0" ItemsSource="{Binding Files}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button
+                                Width="74"
+                                Height="53"
+                                Margin="3,3,3,3"
+                                Background="Transparent"
+                                BorderBrush="Transparent"
+                                Tag="{Binding .}">
+                                <Button.InputBindings>
+                                    <MouseBinding
+                                        Command="{Binding IconDoubleClick, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Button}}"
+                                        Gesture="LeftDoubleClick" />
+                                </Button.InputBindings>
+                                <Button.Content>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
 
-                                    <Image
-                                        Grid.Row="0"
-                                        Width="32"
-                                        Height="32"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Source="{Binding Icon}" />
+                                        <Image
+                                            Grid.Row="0"
+                                            Width="32"
+                                            Height="32"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Source="{Binding Icon}" />
 
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding Name}" />
-                                </Grid>
-                            </Button.Content>
-                        </Button>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                                        <TextBlock
+                                            Grid.Row="1"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Name}" />
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ScrollBar x:Name="FileScrollBar" Grid.Column="1" />
+            </Grid>
+
         </Grid>
     </Grid>
 </Window>

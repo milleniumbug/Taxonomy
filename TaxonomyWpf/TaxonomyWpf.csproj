@@ -69,6 +69,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="NamespaceItem.cs" />
+    <Compile Include="NativeExplorerInterface.cs" />
     <Compile Include="TaxonomyItem.cs" />
     <Compile Include="TrivialCommand.cs" />
     <Page Include="BreadCrumbs.xaml">

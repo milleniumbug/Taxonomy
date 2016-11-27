@@ -47,9 +47,12 @@ namespace TaxonomyWpf
 			Namespaces = new ObservableCollection<NamespaceItem>() {new NamespaceItem(new Namespace("kind"))};
 			Files = new ObservableCollection<FileItem>()
 			{
+				new FileItem(null, @"C:\Windows"),
 				new FileItem(null, @"C:\Windows\regedit.exe"),
 				new FileItem(null, @"C:\Windows\notepad.exe")
 			};
+			foreach(var i in Enumerable.Repeat(new FileItem(null, @"C:\Windows\notepad.exe"), 1000))
+				Files.Add(i);
 			InitializeComponent();
 		}
 
