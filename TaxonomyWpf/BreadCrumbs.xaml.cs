@@ -81,11 +81,15 @@ namespace TaxonomyWpf
 			{
 				list.RemoveAt(i);
 			}
+			OnPropertyChanged(nameof(Path));
 		}
 
 		private void OnEditPathClick(object sender, RoutedEventArgs e)
 		{
 			Mode = Mode.Editing;
+			EditPathTextBox.Focus();
+			EditPathTextBox.SelectionStart = 0;
+			EditPathTextBox.SelectionLength = EditPathTextBox.Text.Length;
 		}
 
 		private void OnLostFocusTextBox(object sender, KeyboardFocusChangedEventArgs e)

@@ -15,6 +15,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <TextBox
+            x:Name="EditPathTextBox"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             LostFocus="PathEditorLostFocus"
