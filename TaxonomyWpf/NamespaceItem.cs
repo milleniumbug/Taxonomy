@@ -14,12 +14,7 @@ namespace TaxonomyWpf
 
 		private Lazy<ICollection<TagName>> tags = new Lazy<ICollection<TagName>>(() =>
 		{
-			Console.WriteLine("make very visible side-effect");
-			return new ObservableCollection<TagName>()
-			{
-				new TagName("test"),
-				new TagName("test2")
-			};
+			return new ObservableCollection<TagName>();
 		});
 
 		public ICollection<TagName> Tags => tags.Value;

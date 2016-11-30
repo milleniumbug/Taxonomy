@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ using System.Windows.Shapes;
 using Gu.Reactive;
 using Microsoft.Win32;
 using TaxonomyLib;
+using File = TaxonomyLib.File;
 
 namespace TaxonomyWpf
 {
@@ -24,7 +26,38 @@ namespace TaxonomyWpf
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		private TaxonomyItem currentTaxonomy;
+		private FileItem currentFile;
 		public File File { get; }
+
+		public string SearchQuery { get; set; }
+
+		public TaxonomyItem CurrentTaxonomy
+		{
+			get { return currentTaxonomy; }
+			set
+			{
+				currentTaxonomy = value;
+				var taxonomy = currentTaxonomy.Taxonomy.Value;
+				Namespaces.Clear();
+				foreach(var ns in taxonomy.AllNamespaces())
+				{
+					var namespaceItem = new NamespaceItem(ns);
+					foreach(var tag in taxonomy.TagsInNamespace(ns))
+						namespaceItem.Tags.Add(tag.Name);
+					Namespaces.Add(namespaceItem);
+				}
+			}
+		}
+
+		public FileItem CurrentFile
+		{
+			get { return currentFile; }
+			set
+			{
+				currentFile = value;
+			}
+		}
 
 		public ICollection<TaxonomyItem> Taxonomies { get; }
 
@@ -43,10 +76,9 @@ namespace TaxonomyWpf
 		public MainWindow()
 		{
 			IconDimensions = Tuple.Create(32, 32);
-			IconDoubleClick = new TrivialCommand<Button>(button => { });
+			IconDoubleClick = new TrivialCommand<FileItem>(OnIconDoubleClick);
 			Taxonomies = new ObservableSet<TaxonomyItem>();
-			Taxonomies.Add(new TaxonomyItem(@"C:\Windows\whatever", "sample taxonomy"));
-			Namespaces = new ObservableCollection<NamespaceItem>() {new NamespaceItem(new Namespace("kind"))};
+			Namespaces = new ObservableCollection<NamespaceItem>();
 			Files = new ObservableCollection<FileItem>()
 			{
 				new FileItem(null, @"C:\Windows"),
@@ -73,6 +105,11 @@ namespace TaxonomyWpf
 		{
 			var taxonomyItem = (TaxonomyItem)(((Button) sender).Tag);
 			Taxonomies.Remove(taxonomyItem);
+		}
+
+		private void OnIconDoubleClick(FileItem b)
+		{
+			
 		}
 
 		private void OnIconLeftClick(object sender, RoutedEventArgs e)
