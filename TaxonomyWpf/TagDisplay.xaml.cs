@@ -20,7 +20,7 @@ namespace TaxonomyWpf
 	/// </summary>
 	public partial class TagDisplay : UserControl
 	{
-		public IReadOnlyDictionary<string, IReadOnlyList<string>> Tags { get; }
+		public IReadOnlyCollection<KeyValuePair<string, IReadOnlyList<string>>> Tags { get; }
 
 		public TagDisplay()
 		{
