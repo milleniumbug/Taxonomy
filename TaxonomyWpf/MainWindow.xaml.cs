@@ -72,5 +72,10 @@ namespace TaxonomyWpf
 			var taxonomyItem = (TaxonomyItem)(((Button) sender).Tag);
 			Taxonomies.Remove(taxonomyItem);
 		}
+
+		private void OnIconLeftClick(object sender, RoutedEventArgs e)
+		{
+			
+		}
 	}
 }

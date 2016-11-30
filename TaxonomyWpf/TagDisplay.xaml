@@ -1,0 +1,43 @@
+﻿<UserControl
+    x:Class="TaxonomyWpf.TagDisplay"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TaxonomyWpf"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    mc:Ignorable="d">
+    <ScrollViewer>
+        <ItemsControl Grid.IsSharedSizeScope="True" ItemsSource="{Binding Tags}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="namespaces" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="5,5,5,5"
+                            Grid.IsSharedSizeScope="True"
+                            Text="{Binding Key}" />
+                        <ItemsControl Grid.Column="1" ItemsSource="{Binding Value}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Margin="5,5,5,5" Text="{Binding .}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </ScrollViewer>
+</UserControl>

@@ -94,6 +94,9 @@
     </ApplicationDefinition>
     <Compile Include="NamespaceItem.cs" />
     <Compile Include="NativeExplorerInterface.cs" />
+    <Compile Include="TagDisplay.xaml.cs">
+      <DependentUpon>TagDisplay.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TaxonomyItem.cs" />
     <Compile Include="TrivialCommand.cs" />
     <Page Include="BreadCrumbs.xaml">
@@ -116,6 +119,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="TagDisplay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
