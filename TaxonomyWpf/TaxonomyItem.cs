@@ -9,8 +9,38 @@ using TaxonomyLib;
 
 namespace TaxonomyWpf
 {
-	public class TaxonomyItem
+	public class TaxonomyItem : IEquatable<TaxonomyItem>
 	{
+		public bool Equals(TaxonomyItem other)
+		{
+			if(ReferenceEquals(null, other)) return false;
+			if(ReferenceEquals(this, other)) return true;
+			return string.Equals(Path, other.Path);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if(ReferenceEquals(null, obj)) return false;
+			if(ReferenceEquals(this, obj)) return true;
+			if(obj.GetType() != this.GetType()) return false;
+			return Equals((TaxonomyItem) obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return (Path != null ? Path.GetHashCode() : 0);
+		}
+
+		public static bool operator ==(TaxonomyItem left, TaxonomyItem right)
+		{
+			return Equals(left, right);
+		}
+
+		public static bool operator !=(TaxonomyItem left, TaxonomyItem right)
+		{
+			return !Equals(left, right);
+		}
+
 		public string Path { get; }
 
 		public string ShortPath

@@ -13,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Gu.Reactive;
+using Microsoft.Win32;
 using TaxonomyLib;
 
 namespace TaxonomyWpf
@@ -42,7 +44,7 @@ namespace TaxonomyWpf
 		{
 			IconDimensions = Tuple.Create(32, 32);
 			IconDoubleClick = new TrivialCommand<Button>(button => { });
-			Taxonomies = new ObservableCollection<TaxonomyItem>();
+			Taxonomies = new ObservableSet<TaxonomyItem>();
 			Taxonomies.Add(new TaxonomyItem(@"C:\Windows\whatever", "sample taxonomy"));
 			Namespaces = new ObservableCollection<NamespaceItem>() {new NamespaceItem(new Namespace("kind"))};
 			Files = new ObservableCollection<FileItem>()
@@ -76,6 +78,27 @@ namespace TaxonomyWpf
 		private void OnIconLeftClick(object sender, RoutedEventArgs e)
 		{
 			
+		}
+
+		private void NewTaxonomyClick(object sender, RoutedEventArgs e)
+		{
+			var dialog = new SaveFileDialog();
+
+			if(dialog.ShowDialog() == true)
+			{
+				var taxonomyItem = new TaxonomyItem(dialog.FileName, "unnamed collection");
+				Taxonomies.Add(taxonomyItem);
+			}
+		}
+
+		private void OpenTaxonomyClick(object sender, RoutedEventArgs e)
+		{
+			var dialog = new OpenFileDialog();
+			if(dialog.ShowDialog() == true)
+			{
+				var taxonomyItem = new TaxonomyItem(dialog.FileName, "unnamed collection");
+				Taxonomies.Add(taxonomyItem);
+			}
 		}
 	}
 }

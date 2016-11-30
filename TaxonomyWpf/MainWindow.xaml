@@ -33,8 +33,8 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="New..." />
-                <Button Grid.Column="1" Content="Open..." />
+                <Button Grid.Column="0" Content="New..." Click="NewTaxonomyClick" />
+                <Button Grid.Column="1" Content="Open..." Click="OpenTaxonomyClick"/>
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
