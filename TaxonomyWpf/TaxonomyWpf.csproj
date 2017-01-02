@@ -141,7 +141,7 @@
     <Compile Include="BreadCrumbs.xaml.cs">
       <DependentUpon>BreadCrumbs.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileIt.cs" />
+    <Compile Include="FileEntry.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

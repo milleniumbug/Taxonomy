@@ -208,14 +208,13 @@ namespace TaxonomyLib
 		public Taxonomy(string path) :
 			this(path, new SQLiteConnection($"Data Source={path};Version=3"))
 		{
-
+			connection.Open();
 		}
 
 		private Taxonomy(string path, SQLiteConnection connection)
 		{
 			ManagedFile = path;
 			this.connection = connection;
-			this.connection.Open();
 		}
 
 		public static Taxonomy CreateNew(string path)
@@ -245,7 +244,6 @@ namespace TaxonomyLib
 				FOREIGN KEY(tagId) REFERENCES namespaces(tagId),
 				FOREIGN KEY(fileId) REFERENCES namespaces(fileId),
 				UNIQUE (tagId, fileId) ON CONFLICT IGNORE)", connection).ExecuteNonQuery();
-			connection.Close();
 			return new Taxonomy(path, connection);
 		}
 
