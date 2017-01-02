@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 
 namespace TaxonomyWpf
 {
-	public class FileItem
+	public class FileEntry
 	{
 		private readonly Lazy<ImageSource> icon;
 		public ImageSource Icon => icon.Value;
@@ -25,7 +25,7 @@ namespace TaxonomyWpf
 
 		private string Path { get; }
 
-		public FileItem(TaxonomyLib.File file, string path)
+		public FileEntry(TaxonomyLib.File file, string path)
 		{
 			File = file;
 			Path = path;

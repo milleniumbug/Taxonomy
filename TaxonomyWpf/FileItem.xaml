@@ -1,0 +1,45 @@
+﻿<UserControl
+    x:Class="TaxonomyWpf.FileItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TaxonomyWpf"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <Grid
+        Width="74"
+        Height="53"
+        Margin="3,3,3,3"
+        Tag="{Binding .}">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Image
+                Grid.Row="0"
+                Width="32"
+                Height="32"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Source="{Binding Icon}">
+                <Image.InputBindings>
+                    <MouseBinding
+                        Command="{Binding IconDoubleClick, RelativeSource={RelativeSource AncestorType=Window}}"
+                        CommandParameter="{Binding .}"
+                        Gesture="LeftDoubleClick" />
+                </Image.InputBindings>
+            </Image>
+
+            <TextBlock
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="{Binding Name}" />
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TaxonomyLib;
 
 namespace TaxonomyWpf
 {
@@ -20,24 +22,41 @@ namespace TaxonomyWpf
 	/// </summary>
 	public partial class TagDisplay : UserControl
 	{
-		public IReadOnlyCollection<KeyValuePair<string, IReadOnlyList<string>>> Tags { get; }
+		private readonly ObservableCollection<KeyValuePair<Namespace, IReadOnlyList<Tag>>> tags;
+		public IReadOnlyCollection<KeyValuePair<Namespace, IReadOnlyList<Tag>>> Tags => tags;
+
+		private void AddRange<TItem>(ObservableCollection<TItem> collection, IEnumerable<TItem> elements)
+		{
+			foreach(var element in elements)
+			{
+				collection.Add(element);
+			}
+		}
+
+		public static readonly DependencyProperty FileProperty = DependencyProperty.Register(
+			nameof(File),
+			typeof(File),
+			typeof(TagDisplay),
+			new PropertyMetadata(default(File)));
+
+		public File File
+		{
+			get { return (File)GetValue(FileProperty); }
+			set
+			{
+				var file = value;
+				SetValue(FileProperty, file);
+				tags.Clear();
+				if(file != null)
+					AddRange(tags, file.Tags
+						.GroupBy(tag => tag.Namespace)
+						.Select(group => new KeyValuePair<Namespace, IReadOnlyList<Tag>>(group.Key, group.ToList())));
+			}
+		}
 
 		public TagDisplay()
 		{
-			Tags = new Dictionary<string, IReadOnlyList<string>>()
-			{
-				{ "first", new List<string>() {"aaa", "bbbb", "cccc", "ddddd", "eeeee", "ffffff", "gggggggg" } },
-				{ "second", new List<string>() {"bbbb", } },
-				{ "c", new List<string>() {"aaa", "bbbb", "cccc", "ddddd", "eeeee", "ffffff", "ggffffffffffffffffffffffhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhfffgggggg" } },
-				{ "f", new List<string>() {"aaa", "bbbb", "cccc", "ddddd", "eeeee", "ffffff", "gggggggg" } },
-				{ "a", new List<string>() {"aaa", "bbbb", "cccc", "ddddd", "eeeee", "ffffff", "gggggggg" } },
-				{ "ererererer", new List<string>() {"aaa", "bbbb", "cccc", "ddddd", "eeeee", "ffffff", "gggggggg" } },
-				{ "z", new List<string>() {"aaa", "bbbb", "cccc", "ddddd", "eeeee", "ffffff", "gggggggg" } },
-				{ "vv", new List<string>() {"aaa", "bbbb", "cccc", "ddddd", "eeeee", "ffffff", "gggggggg" } },
-				{ "xx", new List<string>() {"aaa", "bbbb", "cccc", "ddddd", "eeeee", "ffffff", "gggggggg" } },
-				{ "wewe", new List<string>() {"aaa", "bbbb", "cccc", "ddddd", "eeeee", "ffffff", "gggggggg" } },
-				{ "zw", new List<string>() {"aaa", "bbbb", "cccc", "ddddd", "eeeee", "ffffff", "gggggggg" } },
-			};
+			tags = new ObservableCollection<KeyValuePair<Namespace, IReadOnlyList<Tag>>>();
 			InitializeComponent();
 		}
 	}

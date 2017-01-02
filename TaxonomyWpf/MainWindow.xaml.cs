@@ -27,7 +27,7 @@ namespace TaxonomyWpf
 	public partial class MainWindow : Window
 	{
 		private TaxonomyItem currentTaxonomy;
-		private FileItem currentFile;
+		private FileEntry currentFile;
 		public File File { get; }
 
 		public string SearchQuery { get; set; }
@@ -50,7 +50,7 @@ namespace TaxonomyWpf
 			}
 		}
 
-		public FileItem CurrentFile
+		public FileEntry CurrentFile
 		{
 			get { return currentFile; }
 			set
@@ -63,7 +63,7 @@ namespace TaxonomyWpf
 
 		public ICollection<NamespaceItem> Namespaces { get; }
 
-		public ICollection<FileItem> Files { get; }
+		public ICollection<FileEntry> Files { get; }
 
 		public int IconWidth => IconDimensions.Item1;
 
@@ -76,17 +76,12 @@ namespace TaxonomyWpf
 		public MainWindow()
 		{
 			IconDimensions = Tuple.Create(32, 32);
-			IconDoubleClick = new TrivialCommand<FileItem>(OnIconDoubleClick);
+			IconDoubleClick = new TrivialCommand<FileEntry>(OnIconDoubleClick);
 			Taxonomies = new ObservableSet<TaxonomyItem>();
 			Namespaces = new ObservableCollection<NamespaceItem>();
-			Files = new ObservableCollection<FileItem>()
-			{
-				new FileItem(null, @"C:\Windows"),
-				new FileItem(null, @"C:\Windows\regedit.exe"),
-				new FileItem(null, @"C:\Windows\notepad.exe")
-			};
-			foreach(var i in Enumerable.Repeat(new FileItem(null, @"C:\Windows\notepad.exe"), 1000))
-				Files.Add(i);
+			Files =
+				new ObservableCollection<FileEntry>(
+					Directory.EnumerateFileSystemEntries("C:\\Windows").Select(path => new FileEntry(null, path)));
 			InitializeComponent();
 		}
 
@@ -107,7 +102,7 @@ namespace TaxonomyWpf
 			Taxonomies.Remove(taxonomyItem);
 		}
 
-		private void OnIconDoubleClick(FileItem b)
+		private void OnIconDoubleClick(FileEntry b)
 		{
 			
 		}

@@ -112,6 +112,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="FileItem.xaml.cs">
+      <DependentUpon>FileItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NamespaceItem.cs" />
     <Compile Include="NativeExplorerInterface.cs" />
     <Compile Include="TagDisplay.xaml.cs">
@@ -120,6 +123,10 @@
     <Compile Include="TaxonomyItem.cs" />
     <Compile Include="TrivialCommand.cs" />
     <Page Include="BreadCrumbs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -134,7 +141,7 @@
     <Compile Include="BreadCrumbs.xaml.cs">
       <DependentUpon>BreadCrumbs.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileItem.cs" />
+    <Compile Include="FileIt.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
