@@ -37,21 +37,24 @@ namespace TaxonomyWpf
 			nameof(File),
 			typeof(File),
 			typeof(TagDisplay),
-			new PropertyMetadata(default(File)));
+			new PropertyMetadata(default(File), OnFileChanged));
 
 		public File File
 		{
 			get { return (File)GetValue(FileProperty); }
-			set
-			{
-				var file = value;
-				SetValue(FileProperty, file);
-				tags.Clear();
-				if(file != null)
-					AddRange(tags, file.Tags
-						.GroupBy(tag => tag.Namespace)
-						.Select(group => new KeyValuePair<Namespace, IReadOnlyList<Tag>>(group.Key, group.ToList())));
-			}
+			set { SetValue(FileProperty, value); }
+		}
+
+		private static void OnFileChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var self = (TagDisplay)d;
+			var file = (File)e.NewValue;
+			self.tags.Clear();
+			if(file != null)
+				self.AddRange(self.tags, file.Tags
+					.GroupBy(tag => tag.Namespace)
+					.Select(group => new KeyValuePair<Namespace, IReadOnlyList<Tag>>(group.Key, group.ToList())));
+
 		}
 
 		public TagDisplay()
