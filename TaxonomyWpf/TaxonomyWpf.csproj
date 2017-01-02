@@ -186,8 +186,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\Gu.Analyzers.0.1.11.2-dev\analyzers\dotnet\cs\Gu.Analyzers.Analyzers.dll" />
-    <Analyzer Include="..\packages\Gu.Analyzers.0.1.11.2-dev\analyzers\dotnet\cs\Gu.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\Gu.Analyzers.0.1.11.3-dev\analyzers\dotnet\cs\Gu.Analyzers.Analyzers.dll" />
+    <Analyzer Include="..\packages\Gu.Analyzers.0.1.11.3-dev\analyzers\dotnet\cs\Gu.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\WpfAnalyzers.0.2.7.1-dev\analyzers\dotnet\cs\WpfAnalyzers.Analyzers.dll" />
     <Analyzer Include="..\packages\WpfAnalyzers.0.2.7.1-dev\analyzers\dotnet\cs\WpfAnalyzers.CodeFixes.dll" />
   </ItemGroup>
