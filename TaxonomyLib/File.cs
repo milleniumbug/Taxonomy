@@ -9,7 +9,18 @@ namespace TaxonomyLib
 {
 	public class File
 	{
-		public byte[] Hash { get; internal set; }
+		private byte[] hash;
+		public byte[] Hash
+		{
+			get
+			{
+				return (byte[])hash.Clone();
+			}
+			internal set
+			{
+				hash = value;
+			}
+		}
 		internal long Id { get; set; }
 		public string AbsolutePath => Path.Combine(RootPath, RelativePath);
 
