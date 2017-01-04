@@ -33,20 +33,41 @@ namespace TaxonomyWpf
 			set { mode = value; OnPropertyChanged(); }
 		}
 
+		public static readonly DependencyProperty PathProperty = DependencyProperty.Register(
+			nameof(Path),
+			typeof(string),
+			typeof(BreadCrumbs),
+			new PropertyMetadata(default(string), OnPathChanged, CoercePath));
+
+		private static object CoercePath(DependencyObject d, object baseValue)
+		{
+			var self = (BreadCrumbs) d;
+			var newValue = (string) baseValue;
+			return self.JoinPath(self.SplitPath(newValue));
+		}
+
+		private static void OnPathChanged(DependencyObject d, DependencyPropertyChangedEventArgs eventArgs)
+		{
+			var self = (BreadCrumbs) d;
+			var newValue = (string) eventArgs.NewValue;
+			self.Components.Clear();
+			foreach (var indexComponentPair in self.SplitPath(newValue).Select((component, index) => new KeyValuePair<int, string>(index, component)))
+			{
+				self.Components.Add(indexComponentPair);
+			}
+			self.Mode = Mode.BreadCrumbs;
+			self.OnPropertyChanged(nameof(Path));
+		}
+
 		public string Path
 		{
-			get { return string.Join(System.IO.Path.DirectorySeparatorChar.ToString(), Components.Select(indexComponentPair => indexComponentPair.Value).Skip(1)); }
+			get { return (string) GetValue(PathProperty); }
+			set { SetValue(PathProperty, value); }
+		}
 
-			set
-			{
-				Components.Clear();
-				foreach(var indexComponentPair in SplitPath(value).Select((component, index) => new KeyValuePair<int, string>(index, component)))
-				{
-					Components.Add(indexComponentPair);
-				}
-				Mode = Mode.BreadCrumbs;
-				OnPropertyChanged();
-			}
+		private string JoinPath(IEnumerable<string> components)
+		{
+			return string.Join(System.IO.Path.DirectorySeparatorChar.ToString(), components.Skip(1));
 		}
 
 		private IEnumerable<string> SplitPath(string path)
