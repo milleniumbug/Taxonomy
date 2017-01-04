@@ -5,17 +5,10 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace TaxonomyWpf
 {
@@ -30,7 +23,7 @@ namespace TaxonomyWpf
 	/// </summary>
 	public partial class BreadCrumbs : UserControl, INotifyPropertyChanged
 	{
-		private ObservableCollection<string> Components { get; }
+		public ObservableCollection<KeyValuePair<int, string>> Components { get; }
 
 		private Mode mode;
 
@@ -42,29 +35,34 @@ namespace TaxonomyWpf
 
 		public string Path
 		{
-			get { return string.Join(System.IO.Path.DirectorySeparatorChar.ToString(), Components.Skip(1)); }
+			get { return string.Join(System.IO.Path.DirectorySeparatorChar.ToString(), Components.Select(indexComponentPair => indexComponentPair.Value).Skip(1)); }
 
 			set
 			{
 				Components.Clear();
-				Components.Add("This Computer");
-				value = value.TrimEnd();
-				value = value.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()) ? value.Substring(0, value.Length-1) : value;
-				foreach(var component in value.Split(System.IO.Path.DirectorySeparatorChar))
+				foreach(var indexComponentPair in SplitPath(value).Select((component, index) => new KeyValuePair<int, string>(index, component)))
 				{
-					Components.Add(component);
+					Components.Add(indexComponentPair);
 				}
 				Mode = Mode.BreadCrumbs;
 				OnPropertyChanged();
 			}
 		}
 
+		private IEnumerable<string> SplitPath(string path)
+		{
+			var components = new List<string> {"This Computer"};
+			path = path.TrimEnd();
+			path = path.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()) ? path.Substring(0, path.Length - 1) : path;
+			components.AddRange(path.Split(new[]{ System.IO.Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries));
+			return components;
+		}
+
 		public BreadCrumbs()
 		{
-			Components = new ObservableCollection<string>();
-			Path = @"E:\PROJEKTY\Taxonomy\TaxonomyLib";
+			Components = new ObservableCollection<KeyValuePair<int, string>>();
+			Path = "";
 			InitializeComponent();
-			ItemsControl.ItemsSource = Components;
 		}
 
 		public BreadCrumbs(string path)
@@ -74,9 +72,8 @@ namespace TaxonomyWpf
 
 		private void OnComponentClick(object sender, RoutedEventArgs e)
 		{
-			var tag = ((Button) sender).Tag;
-			var list = (IList<string>) Components;
-			var index = list.IndexOf((string)tag);
+			var index = (int)((Button) sender).Tag;
+			var list = Components;
 			for(int i = list.Count - 1; i >= index + 1; i--)
 			{
 				list.RemoveAt(i);

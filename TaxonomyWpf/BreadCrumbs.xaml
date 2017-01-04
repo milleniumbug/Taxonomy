@@ -29,7 +29,8 @@
         <ItemsControl
             x:Name="ItemsControl"
             Grid.Column="0"
-            Visibility="{Binding Mode, Converter={x:Static local:ModeToVisibilityConverter.Default}, ConverterParameter={x:Static local:Mode.BreadCrumbs}}">
+            Visibility="{Binding Mode, Converter={x:Static local:ModeToVisibilityConverter.Default}, ConverterParameter={x:Static local:Mode.BreadCrumbs}}"
+            ItemsSource="{Binding Components}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" />
@@ -40,9 +41,9 @@
                     <Button
                         Padding="15,0,15,0"
                         Click="OnComponentClick"
-                        Content="{Binding .}"
+                        Content="{Binding Value}"
                         FocusVisualStyle="{x:Null}"
-                        Tag="{Binding .}" />
+                        Tag="{Binding Key}" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
