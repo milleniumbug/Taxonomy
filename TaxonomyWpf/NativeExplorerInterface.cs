@@ -33,7 +33,7 @@ namespace TaxonomyWpf
 		[DllImport("user32.dll")]
 		private static extern bool DestroyIcon(IntPtr handle);
 
-		public class HIcon : IDisposable
+		public sealed class HIcon : IDisposable
 		{
 			public IntPtr IconHandle { get; private set; }
 
