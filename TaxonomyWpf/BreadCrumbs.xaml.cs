@@ -23,7 +23,8 @@ namespace TaxonomyWpf
 	/// </summary>
 	public partial class BreadCrumbs : UserControl, INotifyPropertyChanged
 	{
-		public ObservableCollection<KeyValuePair<int, string>> Components { get; }
+		public ObservableCollection<KeyValuePair<int, string>> Components { get; } =
+			new ObservableCollection<KeyValuePair<int, string>>();
 
 		private Mode mode;
 
@@ -79,16 +80,15 @@ namespace TaxonomyWpf
 			return components;
 		}
 
-		public BreadCrumbs()
+		public BreadCrumbs() :
+			this("")
 		{
-			Components = new ObservableCollection<KeyValuePair<int, string>>();
-			Path = "";
-			InitializeComponent();
 		}
 
 		public BreadCrumbs(string path)
 		{
 			Path = path;
+			InitializeComponent();
 		}
 
 		private void OnComponentClick(object sender, RoutedEventArgs e)
