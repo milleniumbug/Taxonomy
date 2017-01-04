@@ -228,7 +228,7 @@ namespace TaxonomyLib
 			new SQLiteCommand(@"CREATE TABLE files (
 				fileId INTEGER PRIMARY KEY,
 				path TEXT UNIQUE NOT NULL,
-				hash BLOB UNIQUE NOT NULL)", connection).ExecuteNonQuery();
+				hash BLOB NOT NULL)", connection).ExecuteNonQuery();
 			new SQLiteCommand(@"CREATE TABLE namespaces (
 				namespaceId INTEGER PRIMARY KEY,
 				name TEXT UNIQUE NOT NULL ON CONFLICT IGNORE)", connection).ExecuteNonQuery();
