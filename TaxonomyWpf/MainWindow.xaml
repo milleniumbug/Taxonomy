@@ -77,8 +77,12 @@
                     <HierarchicalDataTemplate DataType="{x:Type local:NamespaceItem}" ItemsSource="{Binding Tags}">
                         <TextBlock Text="{Binding Namespace.Component}" />
                     </HierarchicalDataTemplate>
-                    <HierarchicalDataTemplate DataType="{x:Type taxonomyLib:TagName}">
-                        <TextBlock Text="{Binding Name}" />
+                    <HierarchicalDataTemplate DataType="{x:Type taxonomyLib:Tag}">
+                        <TextBlock Text="{Binding Name.Name}">
+                            <TextBlock.InputBindings>
+                                <MouseBinding Command="{Binding TagDoubleClick, RelativeSource={RelativeSource AncestorType=Window}}" MouseAction="LeftDoubleClick" CommandParameter="{Binding .}" />
+                            </TextBlock.InputBindings>
+                        </TextBlock>
                     </HierarchicalDataTemplate>
                 </TreeView.Resources>
             </TreeView>
@@ -108,7 +112,7 @@
                 </ListView.ItemsPanel>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <local:FileItem/>
+                        <local:FileItem />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

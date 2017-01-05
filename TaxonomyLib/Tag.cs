@@ -18,5 +18,10 @@ namespace TaxonomyLib
 			Namespace = ns;
 			Name = name;
 		}
+
+		public override string ToString()
+		{
+			return $"{Namespace.Component}:{Name.Name}";
+		}
 	}
 }

@@ -12,12 +12,12 @@ namespace TaxonomyWpf
 	{
 		public Namespace Namespace { get; }
 
-		private Lazy<ICollection<TagName>> tags = new Lazy<ICollection<TagName>>(() =>
+		private Lazy<ICollection<Tag>> tags = new Lazy<ICollection<Tag>>(() =>
 		{
-			return new ObservableCollection<TagName>();
+			return new ObservableCollection<Tag>();
 		});
 
-		public ICollection<TagName> Tags => tags.Value;
+		public ICollection<Tag> Tags => tags.Value;
 
 		public NamespaceItem(Namespace ns)
 		{
