@@ -31,23 +31,23 @@ namespace TaxonomyWpf
 	{
 		private TaxonomyItem currentTaxonomy;
 		private string searchQuery;
-		private string directoryPath;
+		private string currentDirectory;
 		private FileEntry currentFile;
-		public string DirectoryPath
+		public string CurrentDirectory
 		{
 			get
 			{
-				return this.directoryPath;
+				return this.currentDirectory;
 			}
 
 			set
 			{
-				if (value == this.directoryPath)
+				if (value == this.currentDirectory)
 				{
 					return;
 				}
 
-				this.directoryPath = value;
+				this.currentDirectory = value;
 				this.OnPropertyChanged();
 			}
 		}
@@ -90,7 +90,7 @@ namespace TaxonomyWpf
 						namespaceItem.Tags.Add(tag);
 					Namespaces.Add(namespaceItem);
 				}
-				DirectoryPath = taxonomy.RootPath;
+				CurrentDirectory = taxonomy.RootPath;
 				OnPropertyChanged();
 			}
 		}
@@ -137,9 +137,7 @@ namespace TaxonomyWpf
 			TagDoubleClick = new TrivialCommand<Tag>(OnTagDoubleClick);
 			Taxonomies = new ObservableSet<TaxonomyItem>();
 			Namespaces = new ObservableCollection<NamespaceItem>();
-			Files =
-				new ObservableCollection<FileEntry>(
-					Directory.EnumerateFileSystemEntries("C:\\Windows").Select(path => new FileEntry(null, path)));
+			Files = new ObservableCollection<FileEntry>();
 			InitializeComponent();
 		}
 

@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using TaxonomyLib;
 
 namespace TaxonomyWpf
 {
@@ -21,13 +22,27 @@ namespace TaxonomyWpf
 
 		public string Name => System.IO.Path.GetFileName(Path);
 
-		public TaxonomyLib.File File { get; }
+		private Taxonomy taxonomy;
+
+		private TaxonomyLib.File file;
+
+		public TaxonomyLib.File File => file = MaterializeFile(file);
 
 		private string Path { get; }
 
-		public FileEntry(TaxonomyLib.File file, string path)
+		private TaxonomyLib.File MaterializeFile(TaxonomyLib.File file)
 		{
-			File = file;
+			if(file != null)
+			{
+				file = taxonomy.AddFile(Path);
+				taxonomy = null;
+			}
+			return file;
+		}
+
+		public FileEntry(TaxonomyLib.File file, string path, Taxonomy taxonomy)
+		{
+			this.file = file;
 			Path = path;
 			icon = new Lazy<ImageSource>(() =>
 			{
