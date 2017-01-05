@@ -23,7 +23,7 @@
             LostFocus="PathEditorLostFocus"
             PreviewKeyDown="OnKeyPressedDown"
             PreviewLostKeyboardFocus="OnLostFocusTextBox"
-            Text="{Binding Path, UpdateSourceTrigger=Explicit}"
+            Text="{Binding Path, UpdateSourceTrigger=Explicit, RelativeSource={RelativeSource FindAncestor, AncestorType=local:BreadCrumbs}}"
             Visibility="{Binding Mode, Converter={x:Static local:ModeToVisibilityConverter.Default}, ConverterParameter={x:Static local:Mode.Editing}, RelativeSource={RelativeSource FindAncestor, AncestorType=local:BreadCrumbs}}" />
         <ItemsControl
             x:Name="ItemsControl"
