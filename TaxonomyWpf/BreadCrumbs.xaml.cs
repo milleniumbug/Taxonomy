@@ -31,7 +31,15 @@ namespace TaxonomyWpf
 		public Mode Mode
 		{
 			get { return mode; }
-			set { mode = value; OnPropertyChanged(); }
+			set
+			{
+				if(value == this.mode)
+				{
+					return;
+				}
+				mode = value;
+				OnPropertyChanged();
+			}
 		}
 
 		public static readonly DependencyProperty PathProperty = DependencyProperty.Register(
