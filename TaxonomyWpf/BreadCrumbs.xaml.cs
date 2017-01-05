@@ -115,7 +115,7 @@ namespace TaxonomyWpf
 			{
 				list.RemoveAt(i);
 			}
-			OnPropertyChanged(nameof(Path));
+			SetCurrentValue(PathProperty, JoinPath(list.Select(indexValuePair => indexValuePair.Value)));
 		}
 
 		private void OnEditPathClick(object sender, RoutedEventArgs e)

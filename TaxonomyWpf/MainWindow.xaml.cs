@@ -48,6 +48,7 @@ namespace TaxonomyWpf
 				}
 
 				this.currentDirectory = value;
+				UpdateDirectoryListing(value);
 				this.OnPropertyChanged();
 			}
 		}
@@ -129,6 +130,17 @@ namespace TaxonomyWpf
 		public ICommand IconDoubleClick { get; }
 
 		public ICommand TagDoubleClick { get; }
+
+		private void UpdateDirectoryListing(string directoryPath)
+		{
+			if(string.IsNullOrEmpty(directoryPath))
+				return;
+			Files.Clear();
+			foreach(var entry in Directory.EnumerateFileSystemEntries(directoryPath).Select(path => new FileEntry(null, path, CurrentTaxonomy.Taxonomy.Value)))
+			{
+				Files.Add(entry);
+			}
+		}
 
 		public MainWindow()
 		{
