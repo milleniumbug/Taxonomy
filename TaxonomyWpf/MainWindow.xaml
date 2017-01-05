@@ -99,7 +99,7 @@
                 Margin="5,5,5,5"
                 Text="{Binding SearchQuery}"
                 Watermark="Search this directory" />
-            <local:BreadCrumbs Grid.Row="1" Path="{Binding DirectoryPath, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+            <local:BreadCrumbs Grid.Row="1" Path="{Binding DirectoryPath}"/>
             <ListView
                 Grid.Row="2"
                 ItemsSource="{Binding Files}"
