@@ -32,7 +32,7 @@ namespace TaxonomyLib
 			else
 			{
 				item = factory(reader);
-				cache.Add(idExtractor(item), new WeakReference<TItem>(item));
+				cache[idExtractor(item)] = new WeakReference<TItem>(item);
 				return item;
 			}
 		}
