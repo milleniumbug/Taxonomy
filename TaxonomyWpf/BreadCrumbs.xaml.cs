@@ -46,25 +46,32 @@ namespace TaxonomyWpf
 			nameof(Path),
 			typeof(string),
 			typeof(BreadCrumbs),
-			new PropertyMetadata(default(string), OnPathChanged, CoercePath));
+			new PropertyMetadata("", OnPathChanged, CoercePath));
 
 		private static object CoercePath(DependencyObject d, object baseValue)
 		{
 			var self = (BreadCrumbs) d;
 			var newValue = (string) baseValue;
+			if(newValue == null)
+				newValue = "";
 			return self.JoinPath(self.SplitPath(newValue));
+		}
+
+		private void OnPathChanged(string newValue)
+		{
+			Components.Clear();
+			foreach (var indexComponentPair in SplitPath(newValue).Select((component, index) => new KeyValuePair<int, string>(index, component)))
+			{
+				Components.Add(indexComponentPair);
+			}
+			Mode = Mode.BreadCrumbs;
 		}
 
 		private static void OnPathChanged(DependencyObject d, DependencyPropertyChangedEventArgs eventArgs)
 		{
 			var self = (BreadCrumbs) d;
 			var newValue = (string) eventArgs.NewValue;
-			self.Components.Clear();
-			foreach (var indexComponentPair in self.SplitPath(newValue).Select((component, index) => new KeyValuePair<int, string>(index, component)))
-			{
-				self.Components.Add(indexComponentPair);
-			}
-			self.Mode = Mode.BreadCrumbs;
+			self.OnPathChanged(newValue);
 			self.OnPropertyChanged(nameof(Path));
 		}
 
@@ -95,8 +102,9 @@ namespace TaxonomyWpf
 
 		public BreadCrumbs(string path)
 		{
-			Path = path;
 			InitializeComponent();
+			Path = path;
+			OnPathChanged(path);
 		}
 
 		private void OnComponentClick(object sender, RoutedEventArgs e)

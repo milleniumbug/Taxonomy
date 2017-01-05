@@ -251,7 +251,7 @@ namespace TaxonomyLib
 		private SQLiteConnection connection;
 		private readonly Dictionary<long, WeakReference<File>> fileCache = new Dictionary<long, WeakReference<File>>();
 		private readonly Dictionary<long, WeakReference<Tag>> tagCache = new Dictionary<long, WeakReference<Tag>>();
-		private string RootPath => Path.GetDirectoryName(ManagedFile);
+		public string RootPath => Path.GetDirectoryName(ManagedFile);
 		public string ManagedFile { get; }
 
 		public void Dispose()

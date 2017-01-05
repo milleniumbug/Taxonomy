@@ -31,7 +31,26 @@ namespace TaxonomyWpf
 	{
 		private TaxonomyItem currentTaxonomy;
 		private string searchQuery;
+		private string directoryPath;
 		private FileEntry currentFile;
+		public string DirectoryPath
+		{
+			get
+			{
+				return this.directoryPath;
+			}
+
+			set
+			{
+				if (value == this.directoryPath)
+				{
+					return;
+				}
+
+				this.directoryPath = value;
+				this.OnPropertyChanged();
+			}
+		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -71,6 +90,7 @@ namespace TaxonomyWpf
 						namespaceItem.Tags.Add(tag);
 					Namespaces.Add(namespaceItem);
 				}
+				DirectoryPath = taxonomy.RootPath;
 				OnPropertyChanged();
 			}
 		}
