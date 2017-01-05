@@ -46,7 +46,7 @@ namespace TaxonomyWpf
 			nameof(Path),
 			typeof(string),
 			typeof(BreadCrumbs),
-			new PropertyMetadata("", OnPathChanged, CoercePath));
+			new FrameworkPropertyMetadata("", OnPathChanged, CoercePath) {BindsTwoWayByDefault = true});
 
 		private static object CoercePath(DependencyObject d, object baseValue)
 		{
