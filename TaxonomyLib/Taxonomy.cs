@@ -17,7 +17,10 @@ namespace TaxonomyLib
 	{
 		public IEnumerable<File> LookupFilesByTags(IReadOnlyCollection<Tag> tags)
 		{
-			return LookupFilesByTags(FileLookupQueryGenerate(false, tags.Count, tags, null));
+			using(var command = FileLookupQueryGenerate(false, tags.Count, tags, null))
+			{
+				return LookupFiles(command);
+			}
 		}
 
 		private TItem Lookup<TItem>(SQLiteDataReader reader, string idName, Dictionary<long, WeakReference<TItem>> cache,
@@ -37,27 +40,24 @@ namespace TaxonomyLib
 			}
 		}
 
-		private IEnumerable<File> LookupFilesByTags(SQLiteCommand command)
+		private IEnumerable<File> LookupFiles(SQLiteCommand command)
 		{
-			using(var cmd = command)
+			using(var reader = command.ExecuteReader())
 			{
-				using(var reader = cmd.ExecuteReader())
+				while(reader.Read())
 				{
-					while(reader.Read())
-					{
-						yield return
-							Lookup(reader, "fileId", fileCache,
-								dataReader =>
-								{
-									long fileId = (long) dataReader["fileId"];
-									File file = new File(
-										fileId,
-										RootPath, (string) dataReader["path"],
-										ObserveTagCollectionForFile(fileId, new ObservableCollection<Tag>()),
-										(byte[]) dataReader["hash"]);
-									return file;
-								}, file => file.Id);
-					}
+					yield return
+						Lookup(reader, "fileId", fileCache,
+							dataReader =>
+							{
+								long fileId = (long) dataReader["fileId"];
+								File file = new File(
+									fileId,
+									RootPath, (string) dataReader["path"],
+									ObserveTagCollectionForFile(fileId, new ObservableCollection<Tag>()),
+									(byte[]) dataReader["hash"]);
+								return file;
+							}, file => file.Id);
 				}
 			}
 		}
@@ -81,7 +81,10 @@ namespace TaxonomyLib
 
 		public IEnumerable<File> LookupFilesByTagsAndName(IReadOnlyCollection<Tag> tags, string name)
 		{
-			return LookupFilesByTags(FileLookupQueryGenerate(true, tags.Count, tags, name));
+			using(var command = FileLookupQueryGenerate(true, tags.Count, tags, name))
+			{
+				return LookupFiles(command);
+			}
 		}
 
 		public IEnumerable<Namespace> AllNamespaces()
