@@ -17,10 +17,7 @@ namespace TaxonomyLib
 	{
 		public IEnumerable<File> LookupFilesByTags(IReadOnlyCollection<Tag> tags)
 		{
-			using(var command = FileLookupQueryGenerate(false, tags.Count, tags, null))
-			{
-				return LookupFiles(command);
-			}
+			return LookupFiles(FileLookupQueryGenerate(false, tags.Count, tags, null));
 		}
 
 		private TItem Lookup<TItem>(SQLiteDataReader reader, string idName, Dictionary<long, WeakReference<TItem>> cache,
@@ -42,22 +39,25 @@ namespace TaxonomyLib
 
 		private IEnumerable<File> LookupFiles(SQLiteCommand command)
 		{
-			using(var reader = command.ExecuteReader())
+			using(var cmd = command)
 			{
-				while(reader.Read())
+				using (var reader = cmd.ExecuteReader())
 				{
-					yield return
-						Lookup(reader, "fileId", fileCache,
-							dataReader =>
-							{
-								long fileId = (long) dataReader["fileId"];
-								File file = new File(
-									fileId,
-									RootPath, (string) dataReader["path"],
-									ObserveTagCollectionForFile(fileId, new ObservableCollection<Tag>()),
-									(byte[]) dataReader["hash"]);
-								return file;
-							}, file => file.Id);
+					while(reader.Read())
+					{
+						yield return
+							Lookup(reader, "fileId", fileCache,
+								dataReader =>
+								{
+									long fileId = (long) dataReader["fileId"];
+									File file = new File(
+										fileId,
+										RootPath, (string) dataReader["path"],
+										ObserveTagCollectionForFile(fileId, new ObservableCollection<Tag>()),
+										(byte[]) dataReader["hash"]);
+									return file;
+								}, file => file.Id);
+					}
 				}
 			}
 		}
@@ -81,10 +81,7 @@ namespace TaxonomyLib
 
 		public IEnumerable<File> LookupFilesByTagsAndName(IReadOnlyCollection<Tag> tags, string name)
 		{
-			using(var command = FileLookupQueryGenerate(true, tags.Count, tags, name))
-			{
-				return LookupFiles(command);
-			}
+			return LookupFiles(FileLookupQueryGenerate(true, tags.Count, tags, name));
 		}
 
 		public IEnumerable<Namespace> AllNamespaces()
@@ -188,24 +185,43 @@ namespace TaxonomyLib
 			return collection;
 		}
 
-		public File AddFile(string path)
+		public File GetFile(string path)
 		{
-			var tagCollection = new ObservableCollection<Tag>();
-			var file = new File(0, RootPath, path, tagCollection);
-			long id;
-			using (SQLiteCommand command = new SQLiteCommand(@"INSERT INTO files (path, hash) VALUES (@path, @hash)", connection))
+			var relativeToTaxonomyRootPath = PathExt.GetRelativePath(RootPath, Path.GetFullPath(path));
+			using(var transaction = connection.BeginTransaction())
 			{
-				command.Parameters.Add(new SQLiteParameter("@path", DbType.String));
-				command.Parameters.Add(new SQLiteParameter("@hash", DbType.Binary));
-				command.Parameters["@path"].Value = file.RelativePath;
-				command.Parameters["@hash"].Value = file.Hash;
-				command.ExecuteNonQuery();
-				id = connection.LastInsertRowId;
+				File file;
+				using (
+					var command = new SQLiteCommand(@"SELECT * FROM files WHERE path = @path",
+						connection))
+				{
+					command.Parameters.Add(new SQLiteParameter("@path", DbType.String));
+					command.Parameters["@path"].Value = relativeToTaxonomyRootPath;
+					file = LookupFiles(command).FirstOrDefault();
+				}
+				if(file != null)
+					return file;
+
+				long id;
+				var tagCollection = new ObservableCollection<Tag>();
+				file = new File(0, RootPath, relativeToTaxonomyRootPath, tagCollection);
+				using (
+					var command = new SQLiteCommand(@"INSERT INTO files (path, hash) VALUES (@path, @hash)",
+						connection))
+				{
+					command.Parameters.Add(new SQLiteParameter("@path", DbType.String));
+					command.Parameters.Add(new SQLiteParameter("@hash", DbType.Binary));
+					command.Parameters["@path"].Value = file.RelativePath;
+					command.Parameters["@hash"].Value = file.Hash;
+					command.ExecuteNonQuery();
+					id = connection.LastInsertRowId;
+				}
+				file.Id = id;
+				transaction.Commit();
+				ObserveTagCollectionForFile(file.Id, tagCollection);
+				fileCache.Add(file.Id, new WeakReference<File>(file));
+				return file;
 			}
-			file.Id = id;
-			ObserveTagCollectionForFile(file.Id, tagCollection);
-			fileCache.Add(file.Id, new WeakReference<File>(file));
-			return file;
 		}
 
 		public Taxonomy(string path) :

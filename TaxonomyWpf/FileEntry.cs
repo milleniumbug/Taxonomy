@@ -34,7 +34,7 @@ namespace TaxonomyWpf
 		{
 			if(file != null)
 			{
-				file = taxonomy.AddFile(Path);
+				file = taxonomy.GetFile(Path);
 				taxonomy = null;
 			}
 			return file;
