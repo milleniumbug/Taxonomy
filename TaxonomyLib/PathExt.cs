@@ -21,15 +21,17 @@ namespace TaxonomyLib
 		/// <exception cref="InvalidOperationException"></exception>
 		public static string GetRelativePath(string fromPath, string toPath)
 		{
-			if (string.IsNullOrEmpty(fromPath))
-			{
-				throw new ArgumentNullException("fromPath");
-			}
+			if(string.IsNullOrEmpty(fromPath))
+				throw new ArgumentNullException(nameof(fromPath));
 
-			if (string.IsNullOrEmpty(toPath))
-			{
-				throw new ArgumentNullException("toPath");
-			}
+			if(string.IsNullOrEmpty(toPath))
+				throw new ArgumentNullException(nameof(toPath));
+
+			if(!Path.IsPathRooted(fromPath))
+				throw new ArgumentException("the path is not absolute", nameof(fromPath));
+
+			if(!Path.IsPathRooted(toPath))
+				throw new ArgumentException("the path is not absolute", nameof(toPath));
 
 			Uri fromUri = new Uri(AppendDirectorySeparatorChar(fromPath));
 			Uri toUri = new Uri(AppendDirectorySeparatorChar(toPath));

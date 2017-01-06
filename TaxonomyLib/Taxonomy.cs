@@ -216,7 +216,7 @@ namespace TaxonomyLib
 
 		private Taxonomy(string path, SQLiteConnection connection)
 		{
-			ManagedFile = path;
+			ManagedFile = Path.GetFullPath(path);
 			this.connection = connection;
 		}
 
