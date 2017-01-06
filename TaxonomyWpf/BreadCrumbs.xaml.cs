@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Common;
 
 namespace TaxonomyWpf
 {
@@ -23,8 +24,8 @@ namespace TaxonomyWpf
 	/// </summary>
 	public partial class BreadCrumbs : UserControl, INotifyPropertyChanged
 	{
-		public ObservableCollection<KeyValuePair<int, string>> Components { get; } =
-			new ObservableCollection<KeyValuePair<int, string>>();
+		public ObservableBatchCollection<KeyValuePair<int, string>> Components { get; } =
+			new ObservableBatchCollection<KeyValuePair<int, string>>();
 
 		private Mode mode;
 
@@ -60,10 +61,9 @@ namespace TaxonomyWpf
 		private void OnPathChanged(string newValue)
 		{
 			Components.Clear();
-			foreach (var indexComponentPair in SplitPath(newValue).Select((component, index) => new KeyValuePair<int, string>(index, component)))
-			{
-				Components.Add(indexComponentPair);
-			}
+			Components.AddRange(
+				SplitPath(newValue)
+					.Select((component, index) => new KeyValuePair<int, string>(index, component)));
 			Mode = Mode.BreadCrumbs;
 		}
 

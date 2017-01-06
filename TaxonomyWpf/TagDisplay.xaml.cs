@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Common;
 using TaxonomyLib;
 
 namespace TaxonomyWpf
@@ -22,16 +23,8 @@ namespace TaxonomyWpf
 	/// </summary>
 	public partial class TagDisplay : UserControl
 	{
-		private readonly ObservableCollection<KeyValuePair<Namespace, IReadOnlyList<Tag>>> tags;
+		private readonly ObservableBatchCollection<KeyValuePair<Namespace, IReadOnlyList<Tag>>> tags;
 		public IReadOnlyCollection<KeyValuePair<Namespace, IReadOnlyList<Tag>>> Tags => tags;
-
-		private void AddRange<TItem>(ObservableCollection<TItem> collection, IEnumerable<TItem> elements)
-		{
-			foreach(var element in elements)
-			{
-				collection.Add(element);
-			}
-		}
 
 		public static readonly DependencyProperty FileProperty = DependencyProperty.Register(
 			nameof(File),
@@ -51,7 +44,7 @@ namespace TaxonomyWpf
 			var file = (File)e.NewValue;
 			self.tags.Clear();
 			if(file != null)
-				self.AddRange(self.tags, file.Tags
+				self.tags.AddRange(file.Tags
 					.GroupBy(tag => tag.Namespace)
 					.Select(group => new KeyValuePair<Namespace, IReadOnlyList<Tag>>(group.Key, group.ToList())));
 
@@ -59,7 +52,7 @@ namespace TaxonomyWpf
 
 		public TagDisplay()
 		{
-			tags = new ObservableCollection<KeyValuePair<Namespace, IReadOnlyList<Tag>>>();
+			tags = new ObservableBatchCollection<KeyValuePair<Namespace, IReadOnlyList<Tag>>>();
 			InitializeComponent();
 		}
 	}

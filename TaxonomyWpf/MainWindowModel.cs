@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Common;
 using Gu.Reactive;
 using TaxonomyLib;
 using File = TaxonomyLib.File;
@@ -21,14 +22,17 @@ namespace TaxonomyWpf
 		private string currentDirectory;
 		private FileEntry currentFile;
 		private bool disposed;
+		private readonly ObservableSet<TaxonomyItem> taxonomies;
+		private readonly ObservableBatchCollection<NamespaceItem> namespaces;
+		private readonly ObservableBatchCollection<FileEntry> files;
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public ICollection<TaxonomyItem> Taxonomies { get; }
+		public ICollection<TaxonomyItem> Taxonomies => taxonomies;
 
-		public ICollection<NamespaceItem> Namespaces { get; }
+		public ICollection<NamespaceItem> Namespaces => namespaces;
 
-		public ICollection<FileEntry> Files { get; }
+		public ICollection<FileEntry> Files => files;
 
 		public string CurrentDirectory
 		{
@@ -151,14 +155,9 @@ namespace TaxonomyWpf
 		{
 			if(string.IsNullOrEmpty(directoryPath))
 				return;
-			Files.Clear();
-			foreach(
-				var entry in
-				Directory.EnumerateFileSystemEntries(directoryPath)
-					.Select(path => new FileEntry(null, path, CurrentTaxonomy.Taxonomy.Value)))
-			{
-				Files.Add(entry);
-			}
+			files.Clear();
+			files.AddRange(Directory.EnumerateFileSystemEntries(directoryPath)
+					.Select(path => new FileEntry(null, path, CurrentTaxonomy.Taxonomy.Value)));
 		}
 
 		public void AddTagToSearchQuery(Tag tag)
@@ -188,9 +187,9 @@ namespace TaxonomyWpf
 
 		public MainWindowModel()
 		{
-			Taxonomies = new ObservableSet<TaxonomyItem>();
-			Namespaces = new ObservableCollection<NamespaceItem>();
-			Files = new ObservableCollection<FileEntry>();
+			taxonomies = new ObservableSet<TaxonomyItem>();
+			namespaces = new ObservableBatchCollection<NamespaceItem>();
+			files = new ObservableBatchCollection<FileEntry>();
 		}
 	}
 }

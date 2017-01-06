@@ -181,6 +181,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{a57f9681-7bc7-4f38-bdb1-6681db277bd2}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TaxonomyLib\TaxonomyLib.csproj">
       <Project>{79d1878b-5bde-4da0-bb21-6a39c4e9c1e8}</Project>
       <Name>TaxonomyLib</Name>
