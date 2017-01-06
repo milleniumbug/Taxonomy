@@ -115,6 +115,7 @@
     <Compile Include="FileItem.xaml.cs">
       <DependentUpon>FileItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainWindowModel.cs" />
     <Compile Include="NamespaceItem.cs" />
     <Compile Include="NativeExplorerInterface.cs" />
     <Compile Include="TagDisplay.xaml.cs">

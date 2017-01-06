@@ -1,0 +1,196 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+using Gu.Reactive;
+using TaxonomyLib;
+using File = TaxonomyLib.File;
+
+namespace TaxonomyWpf
+{
+	public sealed class MainWindowModel : IDisposable, INotifyPropertyChanged
+	{
+		private TaxonomyItem currentTaxonomy;
+		private string searchQuery;
+		private string currentDirectory;
+		private FileEntry currentFile;
+		private bool disposed;
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		public ICollection<TaxonomyItem> Taxonomies { get; }
+
+		public ICollection<NamespaceItem> Namespaces { get; }
+
+		public ICollection<FileEntry> Files { get; }
+
+		public string CurrentDirectory
+		{
+			get
+			{
+				return currentDirectory;
+			}
+
+			set
+			{
+				if(value == currentDirectory)
+				{
+					return;
+				}
+
+				currentDirectory = value;
+				UpdateDirectoryListing(value);
+				OnPropertyChanged();
+			}
+		}
+
+		public TaxonomyItem CurrentTaxonomy
+		{
+			get { return currentTaxonomy; }
+			set
+			{
+				if(ReferenceEquals(value, currentTaxonomy))
+				{
+					return;
+				}
+
+				currentTaxonomy = value;
+				ChangeActiveTaxonomy(value);
+				OnPropertyChanged();
+			}
+		}
+
+		public FileEntry CurrentFile
+		{
+			get
+			{
+				return currentFile;
+			}
+
+			set
+			{
+				if (ReferenceEquals(value, currentFile))
+				{
+					return;
+				}
+
+				currentFile = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public string SearchQuery
+		{
+			get
+			{
+				return searchQuery;
+			}
+
+			set
+			{
+				if (value == searchQuery)
+				{
+					return;
+				}
+
+				searchQuery = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public void CloseTaxonomy(TaxonomyItem taxonomyItem)
+		{
+			if(taxonomyItem.Taxonomy.IsValueCreated)
+			{
+				var taxonomy = taxonomyItem.Taxonomy.Value;
+				Taxonomies.Remove(taxonomyItem);
+				taxonomy.Dispose();
+			}
+		}
+
+		public void Dispose()
+		{
+			if(disposed)
+			{
+				return;
+			}
+			foreach(var taxonomyItem in Taxonomies)
+			{
+				if(taxonomyItem.Taxonomy.IsValueCreated)
+					taxonomyItem.Taxonomy.Value.Dispose();
+			}
+			this.disposed = true;
+		}
+
+		protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		private void ChangeActiveTaxonomy(TaxonomyItem newTaxonomyItem)
+		{
+			var taxonomy = newTaxonomyItem.Taxonomy.Value;
+			Namespaces.Clear();
+			foreach(var ns in taxonomy.AllNamespaces())
+			{
+				var namespaceItem = new NamespaceItem(ns);
+				foreach(var tag in taxonomy.TagsInNamespace(ns))
+					namespaceItem.Tags.Add(tag);
+				Namespaces.Add(namespaceItem);
+			}
+			CurrentDirectory = taxonomy.RootPath;
+		}
+
+		private void UpdateDirectoryListing(string directoryPath)
+		{
+			if(string.IsNullOrEmpty(directoryPath))
+				return;
+			Files.Clear();
+			foreach(
+				var entry in
+				Directory.EnumerateFileSystemEntries(directoryPath)
+					.Select(path => new FileEntry(null, path, CurrentTaxonomy.Taxonomy.Value)))
+			{
+				Files.Add(entry);
+			}
+		}
+
+		public void AddTagToSearchQuery(Tag tag)
+		{
+			SearchQuery += tag + " ";
+		}
+
+		public void CreateNewTaxonomy(string path, string shortName)
+		{
+			var taxonomyItem = new TaxonomyItem(path, shortName, p => Taxonomy.CreateNew(p));
+			Taxonomies.Add(taxonomyItem);
+		}
+
+		public void OpenTaxonomy(string path)
+		{
+			var taxonomyItem = new TaxonomyItem(path, "unnamed collection", p => new Taxonomy(p));
+			Taxonomies.Add(taxonomyItem);
+		}
+
+		private void ThrowIfDisposed()
+		{
+			if(disposed)
+			{
+				throw new ObjectDisposedException(GetType().FullName);
+			}
+		}
+
+		public MainWindowModel()
+		{
+			Taxonomies = new ObservableSet<TaxonomyItem>();
+			Namespaces = new ObservableCollection<NamespaceItem>();
+			Files = new ObservableCollection<FileEntry>();
+		}
+	}
+}

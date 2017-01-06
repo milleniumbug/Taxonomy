@@ -27,100 +27,8 @@ namespace TaxonomyWpf
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow : Window, INotifyPropertyChanged
+	public partial class MainWindow : Window
 	{
-		private TaxonomyItem currentTaxonomy;
-		private string searchQuery;
-		private string currentDirectory;
-		private FileEntry currentFile;
-		public string CurrentDirectory
-		{
-			get
-			{
-				return this.currentDirectory;
-			}
-
-			set
-			{
-				if (value == this.currentDirectory)
-				{
-					return;
-				}
-
-				this.currentDirectory = value;
-				UpdateDirectoryListing(value);
-				this.OnPropertyChanged();
-			}
-		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		public File File { get; }
-
-		public string SearchQuery
-		{
-			get
-			{
-				return this.searchQuery;
-			}
-
-			set
-			{
-				if (value == this.searchQuery)
-				{
-					return;
-				}
-
-				this.searchQuery = value;
-				this.OnPropertyChanged();
-			}
-		}
-
-		public TaxonomyItem CurrentTaxonomy
-		{
-			get { return currentTaxonomy; }
-			set
-			{
-				currentTaxonomy = value;
-				var taxonomy = currentTaxonomy.Taxonomy.Value;
-				Namespaces.Clear();
-				foreach(var ns in taxonomy.AllNamespaces())
-				{
-					var namespaceItem = new NamespaceItem(ns);
-					foreach(var tag in taxonomy.TagsInNamespace(ns))
-						namespaceItem.Tags.Add(tag);
-					Namespaces.Add(namespaceItem);
-				}
-				CurrentDirectory = taxonomy.RootPath;
-				OnPropertyChanged();
-			}
-		}
-
-		public FileEntry CurrentFile
-		{
-			get
-			{
-				return this.currentFile;
-			}
-
-			set
-			{
-				if (ReferenceEquals(value, this.currentFile))
-				{
-					return;
-				}
-
-				currentFile = value;
-				this.OnPropertyChanged();
-			}
-		}
-
-		public ICollection<TaxonomyItem> Taxonomies { get; }
-
-		public ICollection<NamespaceItem> Namespaces { get; }
-
-		public ICollection<FileEntry> Files { get; }
-
 		public int IconWidth => IconDimensions.Item1;
 
 		public int IconHeight => IconDimensions.Item2;
@@ -131,50 +39,28 @@ namespace TaxonomyWpf
 
 		public ICommand TagDoubleClick { get; }
 
-		private void UpdateDirectoryListing(string directoryPath)
-		{
-			if(string.IsNullOrEmpty(directoryPath))
-				return;
-			Files.Clear();
-			foreach(var entry in Directory.EnumerateFileSystemEntries(directoryPath).Select(path => new FileEntry(null, path, CurrentTaxonomy.Taxonomy.Value)))
-			{
-				Files.Add(entry);
-			}
-		}
+		public MainWindowModel Model { get; }
 
 		public MainWindow()
 		{
 			IconDimensions = Tuple.Create(32, 32);
 			IconDoubleClick = new TrivialCommand<FileEntry>(OnIconDoubleClick);
 			TagDoubleClick = new TrivialCommand<Tag>(OnTagDoubleClick);
-			Taxonomies = new ObservableSet<TaxonomyItem>();
-			Namespaces = new ObservableCollection<NamespaceItem>();
-			Files = new ObservableCollection<FileEntry>();
-			InitializeComponent();
-		}
 
-		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			InitializeComponent();
+			Model = (MainWindowModel)DataContext;
 		}
 
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);
-			foreach(var taxonomyItem in Taxonomies)
-			{
-				if(taxonomyItem.Taxonomy.IsValueCreated)
-					taxonomyItem.Taxonomy.Value.Dispose();
-			}
-			//Taxonomy.Dispose();
+			Model.Dispose();
 		}
 
 		private void OnRemoveTagClick(object sender, RoutedEventArgs e)
 		{
 			var taxonomyItem = (TaxonomyItem)(((Button) sender).Tag);
-			var taxonomy = taxonomyItem.Taxonomy.IsValueCreated ? taxonomyItem.Taxonomy.Value : null;
-			Taxonomies.Remove(taxonomyItem);
-			taxonomy?.Dispose();
+			Model.CloseTaxonomy(taxonomyItem);
 		}
 
 		private void OnIconDoubleClick(FileEntry b)
@@ -182,12 +68,12 @@ namespace TaxonomyWpf
 			
 		}
 
-		private void OnTagDoubleClick(Tag t)
+		private void OnTagDoubleClick(Tag tag)
 		{
-			SearchQuery += t + " ";
+			Model.AddTagToSearchQuery(tag);
 		}
 
-		private void OnIconLeftClick(object sender, RoutedEventArgs e)
+		private void OnIconDoubleLeftClick(object sender, RoutedEventArgs e)
 		{
 			
 		}
@@ -198,8 +84,7 @@ namespace TaxonomyWpf
 
 			if(dialog.ShowDialog() == true)
 			{
-				var taxonomyItem = new TaxonomyItem(dialog.FileName, "unnamed collection");
-				Taxonomies.Add(taxonomyItem);
+				Model.CreateNewTaxonomy(dialog.FileName, System.IO.Path.GetFileNameWithoutExtension(dialog.FileName));
 			}
 		}
 
@@ -208,8 +93,7 @@ namespace TaxonomyWpf
 			var dialog = new OpenFileDialog();
 			if(dialog.ShowDialog() == true)
 			{
-				var taxonomyItem = new TaxonomyItem(dialog.FileName, "unnamed collection");
-				Taxonomies.Add(taxonomyItem);
+				Model.OpenTaxonomy(dialog.FileName);
 			}
 		}
 	}

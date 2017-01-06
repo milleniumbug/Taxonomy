@@ -56,11 +56,11 @@ namespace TaxonomyWpf
 
 		public Lazy<TaxonomyLib.Taxonomy> Taxonomy { get; }
 
-		public TaxonomyItem(string path, string shortName)
+		public TaxonomyItem(string path, string shortName, Func<string, Taxonomy> taxonomyFactory)
 		{
 			Path = path;
 			ShortName = shortName;
-			Taxonomy = new Lazy<TaxonomyLib.Taxonomy>(() => new TaxonomyLib.Taxonomy(path));
+			Taxonomy = new Lazy<TaxonomyLib.Taxonomy>(() => taxonomyFactory(path));
 		}
 	}
 
