@@ -6,7 +6,7 @@ namespace TaxonomyWpf
 {
 	public static class NativeExplorerInterface
 	{
-		[StructLayout(LayoutKind.Sequential)]
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 		private struct SHFILEINFO
 		{
 			public IntPtr hIcon;
@@ -22,7 +22,7 @@ namespace TaxonomyWpf
 		private const uint SHGFI_LARGEICON = 0x0;    // 'Large icon
 		private const uint SHGFI_SMALLICON = 0x1;    // 'Small icon
 
-		[DllImport("shell32.dll")]
+		[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
 		private static extern IntPtr SHGetFileInfo(
 			string pszPath,
 			uint dwFileAttributes,
