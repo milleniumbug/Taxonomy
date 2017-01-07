@@ -30,7 +30,7 @@ namespace TaxonomyWpf
 		{
 			get
 			{
-				if(file != null)
+				if(file == null)
 				{
 					file = taxonomy.GetFile(Path);
 					taxonomy = null;
@@ -45,6 +45,7 @@ namespace TaxonomyWpf
 		{
 			this.file = file;
 			Path = path;
+			this.taxonomy = taxonomy;
 			icon = new Lazy<ImageSource>(() =>
 			{
 				using(var extractedIcon = NativeExplorerInterface.GetHIconForFile(Path))

@@ -96,5 +96,76 @@ namespace TaxonomyWpf
 				Model.OpenTaxonomy(dialog.FileName);
 			}
 		}
+
+		private Point? tagClickStartPoint;
+
+		private void TagPreviewLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			tagClickStartPoint = e.GetPosition(null);
+		}
+
+		private void TagPreviewMouseMove(object sender, MouseEventArgs e)
+		{
+			if(tagClickStartPoint == null)
+				return;
+
+			Point currentPosition = e.GetPosition(null);
+			Vector distance = tagClickStartPoint.Value - currentPosition;
+
+			if(e.LeftButton == MouseButtonState.Pressed &&
+				Math.Abs(distance.X) > SystemParameters.MinimumHorizontalDragDistance &&
+				Math.Abs(distance.Y) > SystemParameters.MinimumVerticalDragDistance)
+			{
+				// Get the dragged ListViewItem
+				var treeView = (TreeView)sender;
+				var item =
+					FindAnchestor<TextBlock>((DependencyObject)e.OriginalSource);
+
+				// Find the data behind the ListViewItem
+				var tag = item?.DataContext as Tag;
+
+				if(tag == null)
+					return;
+
+				// Initialize the drag & drop operation
+				var dragData = new DataObject(typeof(Tag), tag);
+				DragDrop.DoDragDrop(item, dragData, DragDropEffects.Move);
+
+				tagClickStartPoint = null;
+			}
+		}
+
+		private void IconEnterDrag(object sender, DragEventArgs e)
+		{
+			if(!e.Data.GetDataPresent(typeof(Tag)) || sender == e.Source)
+			{
+				e.Effects = DragDropEffects.None;;
+			}
+		}
+
+		private void IconDrop(object sender, DragEventArgs e)
+		{
+			if(e.Data.GetDataPresent(typeof(Tag)))
+			{
+				var tag = (Tag)e.Data.GetData(typeof(Tag));
+				var file = (FileItem)sender;
+				Model.AddTagToFile((FileEntry)file.DataContext, tag);
+			}
+		}
+
+		private static T FindAnchestor<T>(DependencyObject current)
+			where T : DependencyObject
+		{
+			do
+			{
+				var anchestor = current as T;
+				if(anchestor != null)
+				{
+					return anchestor;
+				}
+				current = VisualTreeHelper.GetParent(current);
+			} while (current != null);
+			return null;
+		}
 	}
 }
