@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace TaxonomyWpf
 
 		public string Name => System.IO.Path.GetFileName(Path);
 
-		private Taxonomy taxonomy;
+		private readonly WeakReference<Taxonomy> taxonomy;
 
 		private TaxonomyLib.File file;
 
@@ -32,8 +33,16 @@ namespace TaxonomyWpf
 			{
 				if(file == null)
 				{
-					file = taxonomy.GetFile(Path);
-					taxonomy = null;
+					Taxonomy t;
+					if(taxonomy.TryGetTarget(out t))
+					{
+						file = t.GetFile(Path);
+						taxonomy.SetTarget(null);
+					}
+					else
+					{
+						Debug.Assert(false);
+					}
 				}
 				return file;
 			}
@@ -45,7 +54,7 @@ namespace TaxonomyWpf
 		{
 			this.file = file;
 			Path = path;
-			this.taxonomy = taxonomy;
+			this.taxonomy = new WeakReference<Taxonomy>(taxonomy);
 			icon = new Lazy<ImageSource>(() =>
 			{
 				using(var extractedIcon = NativeExplorerInterface.GetHIconForFile(Path))

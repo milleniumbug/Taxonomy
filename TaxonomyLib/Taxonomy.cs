@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Gu.Reactive;
 
 namespace TaxonomyLib
 {
@@ -52,7 +53,7 @@ namespace TaxonomyLib
 									long fileId = (long) dataReader["fileId"];
 									var tagCollection = new Lazy<ICollection<Tag>>(() =>
 									{
-										var c = new ObservableCollection<Tag>();
+										var c = new ObservableSet<Tag>();
 										foreach(var tag in LookupTagsForFileId(fileId))
 										{
 											c.Add(tag);
@@ -190,7 +191,7 @@ namespace TaxonomyLib
 			}
 		}
 
-		private ObservableCollection<Tag> ObserveTagCollectionForFile(long fileId, ObservableCollection<Tag> collection)
+		private ObservableSet<Tag> ObserveTagCollectionForFile(long fileId, ObservableSet<Tag> collection)
 		{
 			collection.CollectionChanged += (sender, args) =>
 			{
@@ -246,7 +247,7 @@ namespace TaxonomyLib
 					return file;
 
 				long id;
-				var tagCollection = new Lazy<ICollection<Tag>>(() => new ObservableCollection<Tag>());
+				var tagCollection = new Lazy<ICollection<Tag>>(() => new ObservableSet<Tag>());
 				file = new File(0, RootPath, relativeToTaxonomyRootPath, tagCollection);
 				using (
 					var command = new SQLiteCommand(@"INSERT INTO files (path, hash) VALUES (@path, @hash)",
@@ -261,57 +262,88 @@ namespace TaxonomyLib
 				}
 				file.Id = id;
 				transaction.Commit();
-				ObserveTagCollectionForFile(file.Id, (ObservableCollection<Tag>)tagCollection.Value);
+				ObserveTagCollectionForFile(file.Id, (ObservableSet<Tag>)tagCollection.Value);
 				fileCache.Add(file.Id, new WeakReference<File>(file));
 				return file;
 			}
 		}
 
 		public Taxonomy(string path) :
-			this(path, new SQLiteConnection($"Data Source={path};Version=3"))
+			this(path, new SQLiteConnection($"Data Source={path};Version=3").OpenAndReturn())
 		{
-			connection.Open();
+
 		}
 
 		private Taxonomy(string path, SQLiteConnection connection)
 		{
 			ManagedFile = Path.GetFullPath(path);
 			this.connection = connection;
+			using(var command = new SQLiteCommand(@"SELECT shortName FROM taxonomyMeta", connection))
+			{
+				ShortName = (string)command.ExecuteScalar();
+			}
 		}
 
 		public static Taxonomy CreateNew(string path)
 		{
+			return CreateNew(path, Path.GetFileNameWithoutExtension(path));
+		}
+
+		public static Taxonomy CreateNew(string path, string shortName)
+		{
 			SQLiteConnection.CreateFile(path);
 			SQLiteConnection connection = new SQLiteConnection($"Data Source={path};Version=3");
 			connection.Open();
-			new SQLiteCommand(@"CREATE TABLE taxonomyMeta (
-				version INTEGER)", connection).ExecuteNonQuery();
-			new SQLiteCommand(@"INSERT INTO taxonomyMeta VALUES (1)", connection).ExecuteNonQuery();
-			new SQLiteCommand(@"CREATE TABLE files (
+			using(var command = new SQLiteCommand(@"CREATE TABLE taxonomyMeta (
+				version INTEGER,
+				shortName TEXT)", connection))
+			{
+				command.ExecuteNonQuery();
+			}
+			using(var command = new SQLiteCommand(@"INSERT INTO taxonomyMeta VALUES (1, @shortName)", connection))
+			{
+				command.Parameters.AddWithValue("@shortName", shortName);
+				command.ExecuteNonQuery();
+			}
+			using(var command = new SQLiteCommand(@"CREATE TABLE files (
 				fileId INTEGER PRIMARY KEY,
 				path TEXT UNIQUE NOT NULL,
-				hash BLOB NOT NULL)", connection).ExecuteNonQuery();
-			new SQLiteCommand(@"CREATE TABLE namespaces (
+				hash BLOB NOT NULL)", connection))
+			{
+				command.ExecuteNonQuery();
+			}
+			using(var command = new SQLiteCommand(@"CREATE TABLE namespaces (
 				namespaceId INTEGER PRIMARY KEY,
-				name TEXT UNIQUE NOT NULL ON CONFLICT IGNORE)", connection).ExecuteNonQuery();
-			new SQLiteCommand(@"CREATE TABLE tags (
+				name TEXT UNIQUE NOT NULL ON CONFLICT IGNORE)", connection))
+			{
+				command.ExecuteNonQuery();
+			}
+			using(var command = new SQLiteCommand(@"CREATE TABLE tags (
 				tagId INTEGER PRIMARY KEY,
 				name TEXT NOT NULL,
 				namespaceId INTEGER,
 				FOREIGN KEY(namespaceId) REFERENCES namespaces(namespaceId),
-				UNIQUE (namespaceId, name) ON CONFLICT IGNORE)", connection).ExecuteNonQuery();
-			new SQLiteCommand(@"CREATE TABLE tags_files (
+				UNIQUE (namespaceId, name) ON CONFLICT IGNORE)", connection))
+			{
+				command.ExecuteNonQuery();
+			}
+			using(var command = new SQLiteCommand(@"CREATE TABLE tags_files (
 				tagId INTEGER,
 				fileId INTEGER,
 				FOREIGN KEY(tagId) REFERENCES namespaces(tagId),
 				FOREIGN KEY(fileId) REFERENCES namespaces(fileId),
-				UNIQUE (tagId, fileId) ON CONFLICT IGNORE)", connection).ExecuteNonQuery();
+				UNIQUE (tagId, fileId) ON CONFLICT IGNORE)", connection))
+			{
+				command.ExecuteNonQuery();
+			}
 			return new Taxonomy(path, connection);
 		}
 
 		private SQLiteConnection connection;
 		private readonly Dictionary<long, WeakReference<File>> fileCache = new Dictionary<long, WeakReference<File>>();
 		private readonly Dictionary<long, WeakReference<Tag>> tagCache = new Dictionary<long, WeakReference<Tag>>();
+
+		public string ShortName { get; }
 		public string RootPath => Path.GetDirectoryName(ManagedFile);
 		public string ManagedFile { get; }
 

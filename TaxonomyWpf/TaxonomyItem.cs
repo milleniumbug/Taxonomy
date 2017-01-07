@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using TaxonomyLib;
+using System.Runtime.CompilerServices;
 
 namespace TaxonomyWpf
 {
-	public class TaxonomyItem : IEquatable<TaxonomyItem>
+	public class TaxonomyItem : IEquatable<TaxonomyItem>, INotifyPropertyChanged
 	{
+		public event PropertyChangedEventHandler PropertyChanged;
+
 		public bool Equals(TaxonomyItem other)
 		{
 			if(ReferenceEquals(null, other)) return false;
@@ -52,15 +56,19 @@ namespace TaxonomyWpf
 			}
 		}
 
-		public string ShortName { get; private set; }
+		public string ShortName => Taxonomy.IsValueCreated ? Taxonomy.Value.ShortName : "...";
 
 		public Lazy<TaxonomyLib.Taxonomy> Taxonomy { get; }
 
-		public TaxonomyItem(string path, string shortName, Func<string, Taxonomy> taxonomyFactory)
+		public TaxonomyItem(string path, Func<string, Taxonomy> taxonomyFactory)
 		{
 			Path = path;
-			ShortName = shortName;
 			Taxonomy = new Lazy<TaxonomyLib.Taxonomy>(() => taxonomyFactory(path));
+		}
+
+		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 

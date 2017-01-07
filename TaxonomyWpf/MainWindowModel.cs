@@ -144,6 +144,15 @@ namespace TaxonomyWpf
 
 		private void ChangeActiveTaxonomy(TaxonomyItem newTaxonomyItem)
 		{
+			// handle the case where no taxonomy is selected
+			// this can happen when all taxonomies are closed
+			if(newTaxonomyItem == null)
+			{
+				Namespaces.Clear();
+				CurrentDirectory = "";
+				return;
+			}
+
 			var taxonomy = newTaxonomyItem.Taxonomy.Value;
 			Namespaces.Clear();
 			foreach(var ns in taxonomy.AllNamespaces())
@@ -158,9 +167,9 @@ namespace TaxonomyWpf
 
 		private void UpdateDirectoryListing(string directoryPath)
 		{
+			files.Clear();
 			if(string.IsNullOrEmpty(directoryPath))
 				return;
-			files.Clear();
 			files.AddRange(Directory.EnumerateFileSystemEntries(directoryPath)
 					.Select(path => new FileEntry(null, path, CurrentTaxonomy.Taxonomy.Value)));
 		}
@@ -172,13 +181,13 @@ namespace TaxonomyWpf
 
 		public void CreateNewTaxonomy(string path, string shortName)
 		{
-			var taxonomyItem = new TaxonomyItem(path, shortName, p => Taxonomy.CreateNew(p));
+			var taxonomyItem = new TaxonomyItem(path, p => Taxonomy.CreateNew(p, shortName));
 			Taxonomies.Add(taxonomyItem);
 		}
 
 		public void OpenTaxonomy(string path)
 		{
-			var taxonomyItem = new TaxonomyItem(path, "unnamed collection", p => new Taxonomy(p));
+			var taxonomyItem = new TaxonomyItem(path, p => new Taxonomy(p));
 			Taxonomies.Add(taxonomyItem);
 		}
 
