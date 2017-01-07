@@ -91,7 +91,7 @@
                     </HierarchicalDataTemplate>
                 </TreeView.Resources>
             </TreeView>
-            <local:TagDisplay Grid.Row="3" />
+            <local:TagDisplay Grid.Row="3" File="{Binding CurrentFile}"/>
         </Grid>
         <Grid Grid.Row="0" Grid.Column="1">
             <Grid.RowDefinitions>

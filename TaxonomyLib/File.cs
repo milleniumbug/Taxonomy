@@ -53,16 +53,17 @@ namespace TaxonomyLib
 			return false;
 		}
 
-		public ICollection<Tag> Tags { get; }
+		private readonly Lazy<ICollection<Tag>> tags;
+		public ICollection<Tag> Tags => tags.Value;
 
-		internal File(long id, string rootPath, string path, ICollection<Tag> tagCollection, byte[] hash = null)
+		internal File(long id, string rootPath, string path, Lazy<ICollection<Tag>> tagCollection, byte[] hash = null)
 		{
 			RootPath = rootPath;
 			if(Path.IsPathRooted(path))
 				RelativePath = path;
 			else
 				RelativePath = Path.Combine(rootPath, path);
-			Tags = tagCollection;
+			tags = tagCollection;
 			if(hash != null)
 			{
 				Hash = hash;

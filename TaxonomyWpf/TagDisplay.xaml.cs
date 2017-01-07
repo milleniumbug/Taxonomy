@@ -28,20 +28,21 @@ namespace TaxonomyWpf
 
 		public static readonly DependencyProperty FileProperty = DependencyProperty.Register(
 			nameof(File),
-			typeof(File),
+			typeof(FileEntry),
 			typeof(TagDisplay),
-			new PropertyMetadata(default(File), OnFileChanged));
+			new FrameworkPropertyMetadata(default(FileEntry), OnFileChanged) {BindsTwoWayByDefault = true});
 
-		public File File
+		public FileEntry File
 		{
-			get { return (File)GetValue(FileProperty); }
+			get { return (FileEntry)GetValue(FileProperty); }
 			set { SetValue(FileProperty, value); }
 		}
 
 		private static void OnFileChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			var self = (TagDisplay)d;
-			var file = (File)e.NewValue;
+			var fileEntry = (FileEntry)e.NewValue;
+			var file = fileEntry.File;
 			self.tags.Clear();
 			if(file != null)
 				self.tags.AddRange(file.Tags

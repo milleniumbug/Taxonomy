@@ -7,10 +7,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="300"
     d:DesignWidth="300"
-    DataContext="{Binding RelativeSource={RelativeSource Self}}"
     mc:Ignorable="d">
     <ScrollViewer>
-        <ItemsControl Grid.IsSharedSizeScope="True" ItemsSource="{Binding Tags}">
+        <ItemsControl Grid.IsSharedSizeScope="True" ItemsSource="{Binding Tags, RelativeSource={RelativeSource FindAncestor, AncestorType=local:TagDisplay}}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -22,7 +21,7 @@
                             Grid.Column="0"
                             Margin="5,5,5,5"
                             Grid.IsSharedSizeScope="True"
-                            Text="{Binding Key}" />
+                            Text="{Binding Key.Component}" />
                         <ItemsControl Grid.Column="1" ItemsSource="{Binding Value}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -31,7 +30,7 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Margin="5,5,5,5" Text="{Binding .}" />
+                                    <TextBlock Margin="5,5,5,5" Text="{Binding Name}" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

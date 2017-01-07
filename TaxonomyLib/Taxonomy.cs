@@ -50,10 +50,20 @@ namespace TaxonomyLib
 								dataReader =>
 								{
 									long fileId = (long) dataReader["fileId"];
+									var tagCollection = new Lazy<ICollection<Tag>>(() =>
+									{
+										var c = new ObservableCollection<Tag>();
+										foreach(var tag in LookupTagsForFileId(fileId))
+										{
+											c.Add(tag);
+										}
+										ObserveTagCollectionForFile(fileId, c);
+										return c;
+									});
 									File file = new File(
 										fileId,
 										RootPath, (string) dataReader["path"],
-										ObserveTagCollectionForFile(fileId, new ObservableCollection<Tag>()),
+										tagCollection,
 										(byte[]) dataReader["hash"]);
 									return file;
 								}, file => file.Id);
@@ -93,6 +103,39 @@ namespace TaxonomyLib
 					while(reader.Read())
 					{
 						yield return new Namespace((string)reader["name"]);
+					}
+				}
+			}
+		}
+
+		private IEnumerable<Tag> LookupTagsForFile(File file)
+		{
+			return LookupTagsForFileId(file.Id);
+		}
+
+		private IEnumerable<Tag> LookupTagsForFileId(long fileId)
+		{
+			string sql = @"
+				SELECT tags.name, tags.tagId, tags.namespaceId, namespaces.name AS namespaceName
+				FROM tags
+				JOIN tags_files ON tags_files.tagId = tags.tagId
+				JOIN namespaces ON tags.namespaceId = namespaces.namespaceId
+				WHERE tags_files.fileId = @fileId";
+			using (var command = new SQLiteCommand(sql, connection))
+			{
+				command.Parameters.AddWithValue("@fileId", fileId);
+				using(SQLiteDataReader reader = command.ExecuteReader())
+				{
+					while(reader.Read())
+					{
+						yield return Lookup(
+							reader,
+							"tagId",
+							tagCache,
+							dataReader =>
+								new Tag((long) dataReader["tagId"], new Namespace((string) dataReader["namespaceName"]),
+									new TagName((string) dataReader["name"])),
+							tag => tag.Id);
 					}
 				}
 			}
@@ -203,7 +246,7 @@ namespace TaxonomyLib
 					return file;
 
 				long id;
-				var tagCollection = new ObservableCollection<Tag>();
+				var tagCollection = new Lazy<ICollection<Tag>>(() => new ObservableCollection<Tag>());
 				file = new File(0, RootPath, relativeToTaxonomyRootPath, tagCollection);
 				using (
 					var command = new SQLiteCommand(@"INSERT INTO files (path, hash) VALUES (@path, @hash)",
@@ -218,7 +261,7 @@ namespace TaxonomyLib
 				}
 				file.Id = id;
 				transaction.Commit();
-				ObserveTagCollectionForFile(file.Id, tagCollection);
+				ObserveTagCollectionForFile(file.Id, (ObservableCollection<Tag>)tagCollection.Value);
 				fileCache.Add(file.Id, new WeakReference<File>(file));
 				return file;
 			}
@@ -266,7 +309,6 @@ namespace TaxonomyLib
 			return new Taxonomy(path, connection);
 		}
 
-		// TODO: Replace with database connection
 		private SQLiteConnection connection;
 		private readonly Dictionary<long, WeakReference<File>> fileCache = new Dictionary<long, WeakReference<File>>();
 		private readonly Dictionary<long, WeakReference<Tag>> tagCache = new Dictionary<long, WeakReference<Tag>>();

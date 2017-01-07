@@ -10,6 +10,11 @@ namespace TaxonomyLib
 	{
 		public string Name { get; }
 
+		public override string ToString()
+		{
+			return Name;
+		}
+
 		public TagName(string name)
 		{
 			if(string.IsNullOrEmpty(name))
