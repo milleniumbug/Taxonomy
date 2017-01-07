@@ -26,19 +26,20 @@ namespace TaxonomyWpf
 
 		private TaxonomyLib.File file;
 
-		public TaxonomyLib.File File => file = MaterializeFile(file);
+		public TaxonomyLib.File File
+		{
+			get
+			{
+				if(file != null)
+				{
+					file = taxonomy.GetFile(Path);
+					taxonomy = null;
+				}
+				return file;
+			}
+		}
 
 		private string Path { get; }
-
-		private TaxonomyLib.File MaterializeFile(TaxonomyLib.File file)
-		{
-			if(file != null)
-			{
-				file = taxonomy.GetFile(Path);
-				taxonomy = null;
-			}
-			return file;
-		}
 
 		public FileEntry(TaxonomyLib.File file, string path, Taxonomy taxonomy)
 		{
