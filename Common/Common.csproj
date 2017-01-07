@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cache.cs" />
     <Compile Include="LinqExtensions.cs" />
     <Compile Include="ObservableBatchCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
