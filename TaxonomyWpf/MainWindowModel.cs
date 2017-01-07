@@ -108,6 +108,11 @@ namespace TaxonomyWpf
 			}
 		}
 
+		public void AddTagToFile(FileEntry file, Tag tag)
+		{
+			file.File.Tags.Add(tag);
+		}
+
 		public void CloseTaxonomy(TaxonomyItem taxonomyItem)
 		{
 			if(taxonomyItem.Taxonomy.IsValueCreated)
