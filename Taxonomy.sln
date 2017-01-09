@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaxonomyWpf", "TaxonomyWpf\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{A57F9681-7BC7-4F38-BDB1-6681DB277BD2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{A94C2D54-EB39-4663-B7F4-5F0EF7590BA9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{A57F9681-7BC7-4F38-BDB1-6681DB277BD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A57F9681-7BC7-4F38-BDB1-6681DB277BD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A57F9681-7BC7-4F38-BDB1-6681DB277BD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A94C2D54-EB39-4663-B7F4-5F0EF7590BA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A94C2D54-EB39-4663-B7F4-5F0EF7590BA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A94C2D54-EB39-4663-B7F4-5F0EF7590BA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A94C2D54-EB39-4663-B7F4-5F0EF7590BA9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
