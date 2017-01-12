@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -12,36 +14,36 @@ namespace Tests
 	[TestFixture]
 	class ATest
 	{
+		private string projectDirectory;
+
+		[SetUp]
+		public void SetUp()
+		{
+			string executablePath = new Uri(Assembly.GetExecutingAssembly().CodeBase).AbsolutePath;
+			projectDirectory = new FileInfo(executablePath).Directory.Parent.Parent.FullName;
+		}
+
 		[Test]
 		public void T()
 		{
-			using (var taxonomy = Taxonomy.CreateNew(@"testdata\test.sql"))
+			using (var taxonomy = Taxonomy.CreateNew(Path.Combine(projectDirectory, @"testdata\test.sql")))
 			{
-				var firstFile = taxonomy.GetFile(@"testdata\emptyfile.txt");
-				var sameFile = taxonomy.GetFile(@"testdata\emptyfile.txt");
-				Debug.Assert(firstFile == sameFile);
+				var firstFile = taxonomy.GetFile(Path.Combine(projectDirectory, @"testdata\emptyfile.txt"));
+				var sameFile = taxonomy.GetFile(Path.Combine(projectDirectory, @"testdata\emptyfile.txt"));
+				Assert.AreSame(firstFile, sameFile);
 
-				var secondFile = taxonomy.GetFile(@"testdata\😂non😂bmp😂name😂\Audio.png");
+				var secondFile = taxonomy.GetFile(Path.Combine(projectDirectory, @"testdata\😂non😂bmp😂name😂\Audio.png"));
 				var thirdFile =
-					taxonomy.GetFile(@"testdata\zażółć gęślą jaźń\samecontent2.txt");
+					taxonomy.GetFile(Path.Combine(projectDirectory, @"testdata\zażółć gęślą jaźń\samecontent2.txt"));
 				var rodzaj = new Namespace("rodzaj");
 				var firstTag = taxonomy.AddTag(rodzaj, new TagName("film"));
 				var secondTag = taxonomy.AddTag(rodzaj, new TagName("ŚmieszneObrazki"));
 				firstFile.Tags.Add(firstTag);
 				thirdFile.Tags.Add(firstTag);
 				secondFile.Tags.Add(secondTag);
-				foreach (var file in taxonomy.LookupFilesByTags(new[] { firstTag }))
-				{
-					Console.WriteLine(file.AbsolutePath);
-				}
-				foreach (var ns in taxonomy.AllNamespaces())
-				{
-					Console.WriteLine(ns.Component);
-				}
-				foreach (var tags in taxonomy.TagsInNamespace(taxonomy.AllNamespaces().First()))
-				{
-					Console.WriteLine(tags.Name.Name);
-				}
+				CollectionAssert.AreEquivalent(new[] {firstFile, thirdFile}, taxonomy.LookupFilesByTags(new[] {firstTag}));
+				CollectionAssert.AreEqual(new[] { rodzaj }, taxonomy.AllNamespaces());
+				CollectionAssert.AreEquivalent(new[] { firstTag, secondTag }, taxonomy.TagsInNamespace(rodzaj));
 			}
 		}
 
