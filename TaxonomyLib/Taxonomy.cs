@@ -191,10 +191,33 @@ namespace TaxonomyLib
 			}
 		}
 
-		private ObservableSet<Tag> ObserveTagCollectionForFile(long fileId, ObservableSet<Tag> collection)
+		private void ObserveTagCollectionForFile(long fileId, ObservableSet<Tag> collection)
 		{
 			collection.CollectionChanged += (sender, args) =>
 			{
+				if(args.Action == NotifyCollectionChangedAction.Reset)
+				{
+					using(var transaction = connection.BeginTransaction())
+					{
+						using(var command = new SQLiteCommand(@"DELETE FROM tags_files WHERE fileId = @fileId", connection))
+						{
+							command.Parameters.AddWithValue("@fileId", fileId);
+							command.ExecuteNonQuery();
+						}
+						using(var command = new SQLiteCommand(@"INSERT INTO tags_files (tagId, fileId) VALUES (@tagId, @fileId)", connection))
+						{
+							command.Parameters.Add(new SQLiteParameter("@tagId", DbType.Int64));
+							command.Parameters.AddWithValue("@fileId", fileId);
+							var c = (ObservableSet<Tag>)sender;
+							foreach(var tag in c)
+							{
+								command.Parameters["@tagId"].Value = tag.Id;
+								command.ExecuteNonQuery();
+							}
+						}
+						transaction.Commit();
+					}
+				}
 				if(args.NewItems != null)
 				{
 					using(
@@ -226,7 +249,6 @@ namespace TaxonomyLib
 					}
 				}
 			};
-			return collection;
 		}
 
 		public File GetFile(string path)
