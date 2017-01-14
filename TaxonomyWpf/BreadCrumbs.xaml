@@ -28,8 +28,8 @@
         <ItemsControl
             x:Name="ItemsControl"
             Grid.Column="0"
-            Visibility="{Binding Mode, Converter={x:Static local:ModeToVisibilityConverter.Default}, ConverterParameter={x:Static local:Mode.BreadCrumbs}, RelativeSource={RelativeSource FindAncestor, AncestorType=local:BreadCrumbs}}"
-            ItemsSource="{Binding Components, RelativeSource={RelativeSource FindAncestor, AncestorType=local:BreadCrumbs}}">
+            ItemsSource="{Binding Components, RelativeSource={RelativeSource FindAncestor, AncestorType=local:BreadCrumbs}}"
+            Visibility="{Binding Mode, Converter={x:Static local:ModeToVisibilityConverter.Default}, ConverterParameter={x:Static local:Mode.BreadCrumbs}, RelativeSource={RelativeSource FindAncestor, AncestorType=local:BreadCrumbs}}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" />
