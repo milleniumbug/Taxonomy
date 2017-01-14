@@ -112,6 +112,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddTagDialog.xaml.cs">
+      <DependentUpon>AddTagDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FileItem.xaml.cs">
       <DependentUpon>FileItem.xaml</DependentUpon>
     </Compile>
@@ -123,6 +126,10 @@
     </Compile>
     <Compile Include="TaxonomyItem.cs" />
     <Compile Include="TrivialCommand.cs" />
+    <Page Include="AddTagDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="BreadCrumbs.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

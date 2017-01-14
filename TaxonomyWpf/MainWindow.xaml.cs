@@ -162,5 +162,16 @@ namespace TaxonomyWpf
 			} while (current != null);
 			return null;
 		}
+
+		private void AddTagClick(object sender, RoutedEventArgs e)
+		{
+			var dialog = new AddTagDialog();
+			var result = dialog.ShowDialog();
+			if(result == true)
+			{
+				var text = dialog.TagText;
+				Model.AddTag(text);
+			}
+		}
 	}
 }

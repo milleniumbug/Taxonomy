@@ -125,6 +125,28 @@ namespace TaxonomyWpf
 			}
 		}
 
+		// text: tag in the format 'namespace:tag'
+		public void AddTag(string text)
+		{
+			var split = text.Trim().Split(':');
+			var ns = new Namespace(split[0]);
+			var tagName = new TagName(split[1]);
+			var taxonomy = CurrentTaxonomy.Taxonomy.Value;
+			var tag = taxonomy.AddTag(ns, tagName);
+			NamespaceItem namespaceItem = namespaces.FirstOrDefault(ni => ni.Namespace == ns);
+			if(namespaceItem == null)
+			{
+				namespaceItem = new NamespaceItem(ns);
+				namespaces.Add(namespaceItem);
+			}
+			namespaceItem.Tags.Add(tag);
+		}
+
+		public void RemoveTag(Tag tag)
+		{
+			
+		}
+
 		public void AddTagToFile(FileEntry file, Tag tag)
 		{
 			file.File.Tags.Add(tag);
