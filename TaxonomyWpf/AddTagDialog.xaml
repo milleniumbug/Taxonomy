@@ -12,6 +12,7 @@
     MinWidth="450"
     MinHeight="100"
     DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    FocusManager.FocusedElement="{Binding ElementName=TagInputBox}"
     mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -29,16 +30,19 @@
             Grid.ColumnSpan="2"
             Text="Add a tag:" />
         <xctk:WatermarkTextBox
+            x:Name="TagInputBox"
             Grid.Row="1"
             Grid.Column="0"
             Grid.ColumnSpan="2"
+            KeepWatermarkOnGotFocus="True"
             Text="{Binding TagText}"
             Watermark="namespace:tag (e.g. language:english or actor:arnold-schwarzenegger)" />
         <Button
             Grid.Row="2"
             Grid.Column="0"
             Click="Confirm"
-            Content="Add the tag" />
+            Content="Add the tag"
+            IsDefault="True" />
         <Button
             Grid.Row="2"
             Grid.Column="1"
