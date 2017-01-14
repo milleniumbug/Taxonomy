@@ -176,10 +176,12 @@ namespace TaxonomyLib
 					command.Parameters["@name"].Value = ns.Component;
 					command.ExecuteNonQuery();
 				}
-				using (var command = new SQLiteCommand(@"INSERT INTO tags (name, namespaceId) VALUES (@name, last_insert_rowid())", connection))
+				using (var command = new SQLiteCommand(@"INSERT INTO tags (name, namespaceId) VALUES (@tagName, (SELECT namespaceId FROM namespaces WHERE name = @nsName))", connection))
 				{
-					command.Parameters.Add(new SQLiteParameter("@name", DbType.String));
-					command.Parameters["@name"].Value = name.Name;
+					command.Parameters.Add(new SQLiteParameter("@tagName", DbType.String));
+					command.Parameters["@tagName"].Value = name.Name;
+					command.Parameters.Add(new SQLiteParameter("@nsName", DbType.String));
+					command.Parameters["@nsName"].Value = ns.Component;
 					command.ExecuteNonQuery();
 					id = connection.LastInsertRowId;
 				}

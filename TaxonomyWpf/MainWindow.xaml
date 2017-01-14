@@ -101,7 +101,10 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="Add" Click="AddTagClick"/>
+                <Button
+                    Grid.Column="0"
+                    Click="AddTagClick"
+                    Content="Add" />
                 <Button Grid.Column="1" Content="Remove" />
             </Grid>
             <local:TagDisplay Grid.Row="4" File="{Binding CurrentFile}" />
