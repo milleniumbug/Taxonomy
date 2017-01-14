@@ -15,41 +15,52 @@ namespace Tests
 	class ATest
 	{
 		private string projectDirectory;
+		private Taxonomy taxonomy;
+
+		[OneTimeSetUp]
+		public void OneTimeSetUp()
+		{
+			string executablePath = new Uri(Assembly.GetExecutingAssembly().CodeBase).AbsolutePath;
+			projectDirectory = new FileInfo(executablePath).Directory.Parent.Parent.FullName;
+			Directory.SetCurrentDirectory(projectDirectory);
+		}
 
 		[SetUp]
 		public void SetUp()
 		{
-			string executablePath = new Uri(Assembly.GetExecutingAssembly().CodeBase).AbsolutePath;
-			projectDirectory = new FileInfo(executablePath).Directory.Parent.Parent.FullName;
+			taxonomy = Taxonomy.CreateNew(@"testdata\test.sql");
+		}
+
+		[TearDown]
+		public void TearDown()
+		{
+			taxonomy.Dispose();
 		}
 
 		[Test]
 		public void T()
 		{
-			using (var taxonomy = Taxonomy.CreateNew(Path.Combine(projectDirectory, @"testdata\test.sql")))
-			{
-				var firstFile = taxonomy.GetFile(Path.Combine(projectDirectory, @"testdata\emptyfile.txt"));
-				var sameFile = taxonomy.GetFile(Path.Combine(projectDirectory, @"testdata\emptyfile.txt"));
-				Assert.AreSame(firstFile, sameFile);
+			var firstFile = taxonomy.GetFile(@"testdata\emptyfile.txt");
+			var sameFile = taxonomy.GetFile(@"testdata\emptyfile.txt");
+			Assert.AreSame(firstFile, sameFile);
 
-				var secondFile = taxonomy.GetFile(Path.Combine(projectDirectory, @"testdata\😂non😂bmp😂name😂\Audio.png"));
-				var thirdFile =
-					taxonomy.GetFile(Path.Combine(projectDirectory, @"testdata\zażółć gęślą jaźń\samecontent2.txt"));
-				var rodzaj = new Namespace("rodzaj");
-				var firstTag = taxonomy.AddTag(rodzaj, new TagName("film"));
-				var secondTag = taxonomy.AddTag(rodzaj, new TagName("ŚmieszneObrazki"));
-				firstFile.Tags.Add(firstTag);
-				thirdFile.Tags.Add(firstTag);
-				secondFile.Tags.Add(secondTag);
-				CollectionAssert.AreEquivalent(new[] {firstFile, thirdFile}, taxonomy.LookupFilesByTags(new[] {firstTag}).ToList());
-				CollectionAssert.AreEqual(new[] { rodzaj }, taxonomy.AllNamespaces().ToList());
-				CollectionAssert.AreEquivalent(new[] { firstTag, secondTag }, taxonomy.TagsInNamespace(rodzaj).ToList());
-			}
+			var secondFile = taxonomy.GetFile(@"testdata\😂non😂bmp😂name😂\Audio.png");
+			var thirdFile =
+				taxonomy.GetFile(@"testdata\zażółć gęślą jaźń\samecontent2.txt");
+			var rodzaj = new Namespace("rodzaj");
+			var firstTag = taxonomy.AddTag(rodzaj, new TagName("film"));
+			var secondTag = taxonomy.AddTag(rodzaj, new TagName("ŚmieszneObrazki"));
+			firstFile.Tags.Add(firstTag);
+			thirdFile.Tags.Add(firstTag);
+			secondFile.Tags.Add(secondTag);
+			CollectionAssert.AreEquivalent(new[] {firstFile, thirdFile}, taxonomy.LookupFilesByTags(new[] {firstTag}).ToList());
+			CollectionAssert.AreEqual(new[] { rodzaj }, taxonomy.AllNamespaces().ToList());
+			CollectionAssert.AreEquivalent(new[] { firstTag, secondTag }, taxonomy.TagsInNamespace(rodzaj).ToList());
 		}
 
 		static void Main()
 		{
-			
+
 		}
 	}
 }
