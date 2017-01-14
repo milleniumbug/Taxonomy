@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -105,6 +106,22 @@ namespace TaxonomyWpf
 
 				searchQuery = value;
 				OnPropertyChanged();
+			}
+		}
+
+		public void IssueDefaultAction(FileEntry file)
+		{
+			var attributes = System.IO.File.GetAttributes(file.Path);
+			if((attributes & FileAttributes.Directory) != 0)
+			{
+				CurrentDirectory = file.Path;
+			}
+			else
+			{
+				using(var process = Process.Start(file.Path))
+				{
+					// do nothing
+				}
 			}
 		}
 

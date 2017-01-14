@@ -48,7 +48,7 @@ namespace TaxonomyWpf
 			}
 		}
 
-		private string Path { get; }
+		public string Path { get; }
 
 		public FileEntry(TaxonomyLib.File file, string path, Taxonomy taxonomy)
 		{

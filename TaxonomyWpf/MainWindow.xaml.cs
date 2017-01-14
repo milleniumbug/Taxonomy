@@ -65,17 +65,12 @@ namespace TaxonomyWpf
 
 		private void OnIconDoubleClick(FileEntry b)
 		{
-			
+			Model.IssueDefaultAction(b);
 		}
 
 		private void OnTagDoubleClick(Tag tag)
 		{
 			Model.AddTagToSearchQuery(tag);
-		}
-
-		private void OnIconDoubleLeftClick(object sender, RoutedEventArgs e)
-		{
-			
 		}
 
 		private void NewTaxonomyClick(object sender, RoutedEventArgs e)
