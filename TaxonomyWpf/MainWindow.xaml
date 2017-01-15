@@ -15,6 +15,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20*" />
+            <ColumnDefinition Width="5" />
             <ColumnDefinition Width="100*" />
         </Grid.ColumnDefinitions>
         <Grid Grid.Row="0" Grid.Column="0">
@@ -109,9 +110,14 @@
             </Grid>
             <local:TagDisplay Grid.Row="4" File="{Binding CurrentFile}" />
         </Grid>
-        <Grid Grid.Row="0" Grid.Column="1">
+        <GridSplitter
+            Grid.Row="0"
+            Grid.Column="1"
+            HorizontalAlignment="Stretch" />
+        <Grid Grid.Row="0" Grid.Column="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="6*" />
+                <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="4*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -148,10 +154,15 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <local:FilePreview
+            <GridSplitter
                 Grid.Row="0"
                 Grid.RowSpan="3"
                 Grid.Column="1"
+                HorizontalAlignment="Stretch" />
+            <local:FilePreview
+                Grid.Row="0"
+                Grid.RowSpan="3"
+                Grid.Column="2"
                 FilePath="{Binding CurrentFile.Path, Mode=OneWay}" />
         </Grid>
     </Grid>
