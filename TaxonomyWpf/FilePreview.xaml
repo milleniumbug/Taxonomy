@@ -1,0 +1,111 @@
+﻿<UserControl
+    x:Class="TaxonomyWpf.FilePreview"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TaxonomyWpf"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:media="https://github.com/JohanLarsson/Gu.Wpf.Media"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <ContentPresenter Content="{Binding Model, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FilePreview}}}">
+        <ContentPresenter.ContentTemplateSelector>
+            <local:FilePreviewTemplateSelector>
+                <local:FilePreviewTemplateSelector.NullTemplate>
+                    <DataTemplate DataType="{x:Type local:NullPreviewModel}">
+                        <TextBlock Text="No file selected" />
+                    </DataTemplate>
+                </local:FilePreviewTemplateSelector.NullTemplate>
+                <local:FilePreviewTemplateSelector.VideoTemplate>
+                    <DataTemplate DataType="{x:Type local:VideoPreviewModel}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <media:MediaElementWrapper
+                                x:Name="Player"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="4"
+                                Source="{Binding Source}" />
+                            <Button
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Command="MediaCommands.Play"
+                                CommandTarget="{Binding ElementName=Player}"
+                                Content="Play" />
+                            <Button
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Command="MediaCommands.Pause"
+                                CommandTarget="{Binding ElementName=Player}"
+                                Content="Pause" />
+                            <Button
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Command="MediaCommands.Stop"
+                                CommandTarget="{Binding ElementName=Player}"
+                                Content="Stop" />
+                            <ToggleButton
+                                Grid.Row="1"
+                                Grid.Column="3"
+                                Content="Enable sound"
+                                IsChecked="{Binding IsMuted, ElementName=Player, Converter={x:Static local:BoolNegatingConverter.Default}}" />
+                        </Grid>
+                    </DataTemplate>
+                </local:FilePreviewTemplateSelector.VideoTemplate>
+                <local:FilePreviewTemplateSelector.TextTemplate>
+                    <DataTemplate DataType="{x:Type local:TextFilePreviewModel}">
+                        <TextBox
+                            HorizontalScrollBarVisibility="Disabled"
+                            IsReadOnly="True"
+                            Text="{Binding Text, Mode=OneWay}"
+                            TextWrapping="Wrap"
+                            VerticalScrollBarVisibility="Auto" />
+                    </DataTemplate>
+                </local:FilePreviewTemplateSelector.TextTemplate>
+                <local:FilePreviewTemplateSelector.ImageTemplate>
+                    <DataTemplate DataType="{x:Type local:ImagePreviewModel}">
+                        <Image Source="{Binding Source}" />
+                    </DataTemplate>
+                </local:FilePreviewTemplateSelector.ImageTemplate>
+                <local:FilePreviewTemplateSelector.BinaryTemplate>
+                    <DataTemplate DataType="{x:Type local:BinaryFilePreviewModel}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                FontFamily="Courier New"
+                                HorizontalScrollBarVisibility="Disabled"
+                                IsReadOnly="True"
+                                Text="{Binding HexifiedContent, Mode=OneWay}"
+                                VerticalScrollBarVisibility="Auto" />
+                            <Button
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Content="Open as text file" />
+                            <ComboBox Grid.Row="1" Grid.Column="0" />
+                        </Grid>
+                    </DataTemplate>
+                </local:FilePreviewTemplateSelector.BinaryTemplate>
+            </local:FilePreviewTemplateSelector>
+        </ContentPresenter.ContentTemplateSelector>
+    </ContentPresenter>
+</UserControl>

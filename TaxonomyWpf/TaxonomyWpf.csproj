@@ -41,6 +41,10 @@
       <HintPath>..\packages\Gu.Reactive.1.11.0.0\lib\net45\Gu.Reactive.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Gu.Wpf.Media, Version=0.5.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Gu.Wpf.Media.0.5.0.1\lib\net45\Gu.Wpf.Media.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.104.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
@@ -115,17 +119,28 @@
     <Compile Include="AddTagDialog.xaml.cs">
       <DependentUpon>AddTagDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BinaryFilePreviewModel.cs" />
+    <Compile Include="BoolNegatingConverter.cs" />
     <Compile Include="FileItem.xaml.cs">
       <DependentUpon>FileItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FilePreview.xaml.cs">
+      <DependentUpon>FilePreview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FilePreviewModel.cs" />
+    <Compile Include="FilePreviewTemplateSelector.cs" />
+    <Compile Include="ImagePreviewModel.cs" />
     <Compile Include="MainWindowModel.cs" />
     <Compile Include="NamespaceItem.cs" />
     <Compile Include="NativeExplorerInterface.cs" />
+    <Compile Include="NullPreviewModel.cs" />
     <Compile Include="TagDisplay.xaml.cs">
       <DependentUpon>TagDisplay.xaml</DependentUpon>
     </Compile>
     <Compile Include="TaxonomyItem.cs" />
+    <Compile Include="TextFilePreviewModel.cs" />
     <Compile Include="TrivialCommand.cs" />
+    <Compile Include="VideoPreviewModel.cs" />
     <Page Include="AddTagDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -135,6 +150,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FileItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FilePreview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
