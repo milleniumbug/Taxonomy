@@ -14,7 +14,10 @@
             <local:FilePreviewTemplateSelector>
                 <local:FilePreviewTemplateSelector.NullTemplate>
                     <DataTemplate DataType="{x:Type local:NullPreviewModel}">
-                        <TextBlock Text="No file selected" />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="No file selected" />
                     </DataTemplate>
                 </local:FilePreviewTemplateSelector.NullTemplate>
                 <local:FilePreviewTemplateSelector.VideoTemplate>
