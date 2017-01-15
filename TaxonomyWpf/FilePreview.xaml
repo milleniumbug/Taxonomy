@@ -39,7 +39,8 @@
                                 Grid.Column="0"
                                 Grid.ColumnSpan="4"
                                 IsMuted="True"
-                                Source="{Binding Source}" />
+                                Source="{Binding Source}"
+                                Stretch="Uniform" />
                             <Button
                                 Grid.Row="1"
                                 Grid.Column="0"
