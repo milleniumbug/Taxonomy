@@ -83,6 +83,11 @@
                         <Image Source="{Binding Source}" />
                     </DataTemplate>
                 </local:FilePreviewTemplateSelector.ImageTemplate>
+                <local:FilePreviewTemplateSelector.ArchiveTemplate>
+                    <DataTemplate DataType="{x:Type local:ArchivePreviewModel}">
+                        <ListView ItemsSource="{Binding Entries}" />
+                    </DataTemplate>
+                </local:FilePreviewTemplateSelector.ArchiveTemplate>
                 <local:FilePreviewTemplateSelector.AnimatedGifTemplate>
                     <DataTemplate DataType="{x:Type local:AnimatedGifPreviewModel}">
                         <Image gif:AnimationBehavior.RepeatBehavior="Forever" gif:AnimationBehavior.SourceUri="{Binding Source}" />

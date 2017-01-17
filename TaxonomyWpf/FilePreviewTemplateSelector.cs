@@ -14,6 +14,8 @@ namespace TaxonomyWpf
 
 		public DataTemplate ImageTemplate { get; set; }
 
+		public DataTemplate ArchiveTemplate { get; set; }
+
 		public DataTemplate TextTemplate { get; set; }
 
 		public DataTemplate BinaryTemplate { get; set; }
@@ -32,10 +34,12 @@ namespace TaxonomyWpf
 				return TextTemplate;
 			if(item is BinaryFilePreviewModel)
 				return BinaryTemplate;
-			if (item is VideoPreviewModel)
+			if(item is VideoPreviewModel)
 				return VideoTemplate;
-			if (item is AnimatedGifPreviewModel)
+			if(item is AnimatedGifPreviewModel)
 				return AnimatedGifTemplate;
+			if(item is ArchivePreviewModel)
+				return ArchiveTemplate;
 			return NullTemplate;
 		}
 	}

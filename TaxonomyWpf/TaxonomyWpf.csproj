@@ -56,6 +56,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Reactive.Core, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -124,6 +126,7 @@
       <DependentUpon>AddTagDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="AnimatedGifPreviewModel.cs" />
+    <Compile Include="ArchivePreviewModel.cs" />
     <Compile Include="BinaryFilePreviewModel.cs" />
     <Compile Include="BoolNegatingConverter.cs" />
     <Compile Include="FileItem.xaml.cs">

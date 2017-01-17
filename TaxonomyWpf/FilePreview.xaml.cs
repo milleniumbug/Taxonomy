@@ -55,6 +55,8 @@ namespace TaxonomyWpf
 					return new AnimatedGifPreviewModel(path);
 				case ".mp4":
 					return new VideoPreviewModel(path);
+				case ".zip":
+					return new ArchivePreviewModel(path);
 				default:
 					return new BinaryFilePreviewModel(path);
 			}
