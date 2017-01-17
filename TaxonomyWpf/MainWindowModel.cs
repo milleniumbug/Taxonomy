@@ -209,8 +209,11 @@ namespace TaxonomyWpf
 			files.Clear();
 			if(string.IsNullOrEmpty(directoryPath))
 				return;
-			files.AddRange(Directory.EnumerateFileSystemEntries(directoryPath)
-					.Select(path => new FileEntry(null, path, CurrentTaxonomy.Taxonomy.Value)));
+			var directory = new DirectoryInfo(directoryPath);
+			files.AddRange(directory.EnumerateDirectories()
+				.Select(dir => new FileEntry(null, dir.FullName, CurrentTaxonomy.Taxonomy.Value)));
+			files.AddRange(directory.EnumerateFiles()
+				.Select(file => new FileEntry(null, file.FullName, CurrentTaxonomy.Taxonomy.Value)));
 		}
 
 		public void AddTagToSearchQuery(Tag tag)
