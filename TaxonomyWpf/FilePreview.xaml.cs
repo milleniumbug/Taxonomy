@@ -43,7 +43,7 @@ namespace TaxonomyWpf
 		{
 			if (string.IsNullOrWhiteSpace(path))
 				return new NullPreviewModel();
-			switch (System.IO.Path.GetExtension(path))
+			switch (System.IO.Path.GetExtension(path).ToLowerInvariant())
 			{
 				case ".txt":
 					return new TextFilePreviewModel(path);
