@@ -20,6 +20,8 @@ namespace TaxonomyWpf
 
 		public DataTemplate VideoTemplate { get; set; }
 
+		public DataTemplate AnimatedGifTemplate { get; set; }
+
 		public override DataTemplate SelectTemplate(object item, DependencyObject container)
 		{
 			if(item is NullPreviewModel)
@@ -32,6 +34,8 @@ namespace TaxonomyWpf
 				return BinaryTemplate;
 			if (item is VideoPreviewModel)
 				return VideoTemplate;
+			if (item is AnimatedGifPreviewModel)
+				return AnimatedGifTemplate;
 			return NullTemplate;
 		}
 	}

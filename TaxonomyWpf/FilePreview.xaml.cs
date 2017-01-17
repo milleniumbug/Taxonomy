@@ -50,8 +50,9 @@ namespace TaxonomyWpf
 				case ".png":
 				case ".jpg":
 				case ".jpeg":
-				case ".gif":
 					return new ImagePreviewModel(path);
+				case ".gif":
+					return new AnimatedGifPreviewModel(path);
 				case ".mp4":
 					return new VideoPreviewModel(path);
 				default:

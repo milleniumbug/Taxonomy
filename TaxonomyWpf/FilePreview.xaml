@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
     xmlns:local="clr-namespace:TaxonomyWpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:media="https://github.com/JohanLarsson/Gu.Wpf.Media"
@@ -82,6 +83,11 @@
                         <Image Source="{Binding Source}" />
                     </DataTemplate>
                 </local:FilePreviewTemplateSelector.ImageTemplate>
+                <local:FilePreviewTemplateSelector.AnimatedGifTemplate>
+                    <DataTemplate DataType="{x:Type local:AnimatedGifPreviewModel}">
+                        <Image gif:AnimationBehavior.RepeatBehavior="Forever" gif:AnimationBehavior.SourceUri="{Binding Source}" />
+                    </DataTemplate>
+                </local:FilePreviewTemplateSelector.AnimatedGifTemplate>
                 <local:FilePreviewTemplateSelector.BinaryTemplate>
                     <DataTemplate DataType="{x:Type local:BinaryFilePreviewModel}">
                         <Grid>
