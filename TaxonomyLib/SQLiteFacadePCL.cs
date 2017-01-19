@@ -8,12 +8,12 @@ namespace TaxonomyLib
 	{
 		public override SQLConnection Open(string path)
 		{
-			throw new NotImplementedException();
+			return new SQLConnectionPCL(new SQLiteConnection(path));
 		}
 
 		public override SQLConnection CreateNew(string path)
 		{
-			throw new NotImplementedException();
+			return new SQLConnectionPCL(new SQLiteConnection(path, SQLiteOpenFlags.Create));
 		}
 	}
 
@@ -33,12 +33,12 @@ namespace TaxonomyLib
 
 		public override void Open()
 		{
-			throw new NotImplementedException();
+			
 		}
 
 		public override void IssueSimpleCommand(string sql)
 		{
-			throw new NotImplementedException();
+			connection.Execute(sql);
 		}
 
 		public override SQLCommand CreateCommand(string sql)
@@ -89,7 +89,7 @@ namespace TaxonomyLib
 
 		public override void BindNew(string name)
 		{
-			throw new NotImplementedException();
+			
 		}
 
 		public override void BindNew(string name, object value)
@@ -109,7 +109,7 @@ namespace TaxonomyLib
 
 		public override void ExecuteNonQuery()
 		{
-			throw new NotImplementedException();
+			command.ExecuteNonQuery();
 		}
 
 		public override void Dispose()
