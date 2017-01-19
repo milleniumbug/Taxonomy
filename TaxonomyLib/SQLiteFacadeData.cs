@@ -33,6 +33,16 @@ namespace TaxonomyLib
 			}
 		}
 
+		public override SQLiteConnection Open(string path)
+		{
+			return new SQLiteConnection($"Data Source={path};Version=3").OpenAndReturn();
+		}
+
+		public override void Open(SQLiteConnection connection)
+		{
+			connection.Open();
+		}
+
 		public override SQLiteCommand CreateCommand(SQLiteConnection connection, string sql)
 		{
 			return new SQLiteCommand(sql, connection);

@@ -25,6 +25,16 @@ namespace TaxonomyLib
 			throw new NotImplementedException();
 		}
 
+		public override SQLiteConnection Open(string path)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Open(SQLiteConnection connection)
+		{
+			throw new NotImplementedException();
+		}
+
 		public override SQLiteCommand CreateCommand(SQLiteConnection connection, string sql)
 		{
 			return connection.CreateCommand(sql);

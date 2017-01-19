@@ -281,7 +281,7 @@ namespace TaxonomyLib
 		}
 
 		public Taxonomy(string path) :
-			this(path, new SQLiteConnection($"Data Source={path};Version=3").OpenAndReturn())
+			this(path, facade.Open(path))
 		{
 
 		}
@@ -304,7 +304,7 @@ namespace TaxonomyLib
 		public static Taxonomy CreateNew(string path, string shortName)
 		{
 			var connection = facade.CreateNew(path);
-			connection.Open();
+			facade.Open(connection);
 			facade.IssueSimpleCommand(connection, @"CREATE TABLE taxonomyMeta (
 				version INTEGER,
 				shortName TEXT)");

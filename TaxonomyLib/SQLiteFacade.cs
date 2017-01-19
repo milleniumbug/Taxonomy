@@ -9,6 +9,8 @@ namespace TaxonomyLib
 		public abstract T WithCommand<T>(TCommand command, Func<TCommand, T> func);
 		public abstract TConnection CreateNew(string path);
 		public abstract void IssueSimpleCommand(TConnection connection, string sql);
+		public abstract TConnection Open(string path);
+		public abstract void Open(TConnection connection);
 
 		public abstract TCommand CreateCommand(TConnection connection, string sql);
 		public abstract void BindNew(TCommand command, string name);
