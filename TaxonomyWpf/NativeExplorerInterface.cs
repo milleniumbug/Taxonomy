@@ -21,6 +21,7 @@ namespace TaxonomyWpf
 		private const uint SHGFI_ICON = 0x100;
 		private const uint SHGFI_LARGEICON = 0x0;    // 'Large icon
 		private const uint SHGFI_SMALLICON = 0x1;    // 'Small icon
+		private const uint SHGFI_USEFILEATTRIBUTES = 0x10;
 
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
 		private static extern IntPtr SHGetFileInfo(
