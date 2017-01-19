@@ -32,5 +32,38 @@ namespace TaxonomyLib
 				command.ExecuteNonQuery();
 			}
 		}
+
+		public override SQLiteCommand CreateCommand(SQLiteConnection connection, string sql)
+		{
+			return new SQLiteCommand(sql, connection);
+		}
+
+		public override void BindNew(SQLiteCommand command, string name)
+		{
+			command.Parameters.Add(new SQLiteParameter(name));
+		}
+
+		public override void BindNew(SQLiteCommand command, string name, object value)
+		{
+			command.Parameters.AddWithValue(name, value);
+		}
+
+		public override void BindReplace(SQLiteCommand command, string name, object value)
+		{
+			command.Parameters[name].Value = value;
+		}
+
+		public override T ExecuteScalar<T>(SQLiteCommand command)
+		{
+			return (T)command.ExecuteScalar();
+		}
+
+		public override T IssueTransaction<T>(SQLiteConnection connection, Func<DoCommit, T> func)
+		{
+			using(var transaction = connection.BeginTransaction())
+			{
+				return func(() => transaction.Commit());
+			}
+		}
 	}
 }

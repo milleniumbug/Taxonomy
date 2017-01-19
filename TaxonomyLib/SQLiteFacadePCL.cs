@@ -24,5 +24,35 @@ namespace TaxonomyLib
 		{
 			throw new NotImplementedException();
 		}
+
+		public override SQLiteCommand CreateCommand(SQLiteConnection connection, string sql)
+		{
+			return connection.CreateCommand(sql);
+		}
+
+		public override void BindNew(SQLiteCommand command, string name)
+		{
+			
+		}
+
+		public override void BindNew(SQLiteCommand command, string name, object value)
+		{
+			BindReplace(command, name, value);
+		}
+
+		public override void BindReplace(SQLiteCommand command, string name, object value)
+		{
+			command.Bind(name, value);
+		}
+
+		public override T ExecuteScalar<T>(SQLiteCommand command)
+		{
+			return command.ExecuteScalar<T>();
+		}
+
+		public override T IssueTransaction<T>(SQLiteConnection connection, Func<DoCommit, T> func)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
