@@ -43,6 +43,7 @@
     <Compile Include="Cache.cs" />
     <Compile Include="LinqExtensions.cs" />
     <Compile Include="ObservableBatchCollection.cs" />
+    <Compile Include="ObservableSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

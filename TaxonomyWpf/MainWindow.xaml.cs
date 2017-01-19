@@ -16,7 +16,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Gu.Reactive;
 using Microsoft.Win32;
 using TaxonomyLib;
 using File = TaxonomyLib.File;
