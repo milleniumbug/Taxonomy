@@ -32,7 +32,7 @@ namespace TaxonomyLib
 			}
 		}
 
-		private IEnumerable<File> LookupFiles(SQLiteCommand command)
+		private IEnumerable<File> LookupFiles(SQLCommand command)
 		{
 			using(var cmd = command)
 			{
@@ -67,20 +67,20 @@ namespace TaxonomyLib
 			}
 		}
 
-		private SQLiteCommand FileLookupQueryGenerate(bool shouldLookUpPath, int count, IReadOnlyCollection<Tag> tags, string path)
+		private SQLCommand FileLookupQueryGenerate(bool shouldLookUpPath, int count, IReadOnlyCollection<Tag> tags, string path)
 		{
 			string sql = @"SELECT * FROM files WHERE 1=1 " +
 				(shouldLookUpPath ? @"path LIKE ""%@path%""" : "") +
 				(count >= 0 ? "AND (SELECT tagId FROM tags_files WHERE files.fileId = tags_files.fileId) IN (" : "") +
 				string.Join(", ", Enumerable.Range(0, count).Select(x => $"@tag{x}")) +
 				(count >= 0 ? ")" : "");
-			var query = facade.CreateCommand(connection, sql);
+			var query = connection.CreateCommand(sql);
 			foreach (var tagIndex in tags.Zip(Enumerable.Range(0, count), (tag, index) => new { Tag = tag, Index = index }))
 			{
-				facade.BindNew(query, $"@tag{tagIndex.Index}", tagIndex.Tag.Id);
+				query.BindNew($"@tag{tagIndex.Index}", tagIndex.Tag.Id);
 			}
 			if(shouldLookUpPath)
-				facade.BindNew(query, "@path", path);
+				query.BindNew("@path", path);
 			return query;
 		}
 
@@ -91,7 +91,7 @@ namespace TaxonomyLib
 
 		public IEnumerable<Namespace> AllNamespaces()
 		{
-			using(var command = facade.CreateCommand(connection, @"SELECT * FROM namespaces"))
+			using(var command = connection.CreateCommand(@"SELECT * FROM namespaces"))
 			{
 				using(var reader = command.ExecuteReader())
 				{
@@ -116,9 +116,9 @@ namespace TaxonomyLib
 				JOIN tags_files ON tags_files.tagId = tags.tagId
 				JOIN namespaces ON tags.namespaceId = namespaces.namespaceId
 				WHERE tags_files.fileId = @fileId";
-			using (var command = facade.CreateCommand(connection, sql))
+			using (var command = connection.CreateCommand(sql))
 			{
-				facade.BindNew(command, "@fileId", fileId);
+				command.BindNew("@fileId", fileId);
 				using(SQLiteDataReader reader = command.ExecuteReader())
 				{
 					while(reader.Read())
@@ -138,9 +138,9 @@ namespace TaxonomyLib
 
 		public IEnumerable<Tag> TagsInNamespace(Namespace ns)
 		{
-			using (var command = facade.CreateCommand(connection, @"SELECT * FROM tags WHERE namespaceId = (SELECT namespaceId FROM namespaces WHERE name = @name)"))
+			using (var command = connection.CreateCommand(@"SELECT * FROM tags WHERE namespaceId = (SELECT namespaceId FROM namespaces WHERE name = @name)"))
 			{
-				facade.BindNew(command, "@name", ns.Component);
+				command.BindNew("@name", ns.Component);
 				using (SQLiteDataReader reader = command.ExecuteReader())
 				{
 					while (reader.Read())
@@ -161,19 +161,19 @@ namespace TaxonomyLib
 		{
 			var tag = new Tag(0, ns, name);
 			long id;
-			return facade.IssueTransaction(connection, commit =>
+			return connection.IssueTransaction(commit =>
 			{
-				using (var command = facade.CreateCommand(connection, @"INSERT OR IGNORE INTO namespaces (name) VALUES (@name)"))
+				using (var command = connection.CreateCommand(@"INSERT OR IGNORE INTO namespaces (name) VALUES (@name)"))
 				{
-					facade.BindNew(command, "@name", ns.Component);
+					command.BindNew("@name", ns.Component);
 					command.ExecuteNonQuery();
 				}
-				using (var command = facade.CreateCommand(connection, @"INSERT INTO tags (name, namespaceId) VALUES (@tagName, (SELECT namespaceId FROM namespaces WHERE name = @nsName))"))
+				using (var command = connection.CreateCommand(@"INSERT INTO tags (name, namespaceId) VALUES (@tagName, (SELECT namespaceId FROM namespaces WHERE name = @nsName))"))
 				{
-					facade.BindNew(command, "@tagName", name.Name);
-					facade.BindNew(command, "@nsName", ns.Component);
+					command.BindNew("@tagName", name.Name);
+					command.BindNew("@nsName", ns.Component);
 					command.ExecuteNonQuery();
-					id = facade.LastInsertRowIdFor(connection);
+					id = connection.LastInsertRowId();
 				}
 
 				commit();
@@ -189,23 +189,23 @@ namespace TaxonomyLib
 			{
 				if(args.Action == NotifyCollectionChangedAction.Reset)
 				{
-					facade.IssueTransaction(connection, commit =>
+					connection.IssueTransaction(commit =>
 					{
-						using(var command = facade.CreateCommand(connection, @"DELETE FROM tags_files WHERE fileId = @fileId"))
+						using(var command = connection.CreateCommand(@"DELETE FROM tags_files WHERE fileId = @fileId"))
 						{
-							facade.BindNew(command, "@fileId", fileId);
+							command.BindNew("@fileId", fileId);
 							command.ExecuteNonQuery();
 						}
 						using(
-							var command = facade.CreateCommand(connection, @"INSERT INTO tags_files (tagId, fileId) VALUES (@tagId, @fileId)")
+							var command = connection.CreateCommand(@"INSERT INTO tags_files (tagId, fileId) VALUES (@tagId, @fileId)")
 						)
 						{
-							facade.BindNew(command, "@tagId");
-							facade.BindNew(command, "@fileId", fileId);
+							command.BindNew("@tagId");
+							command.BindNew("@fileId", fileId);
 							var c = (ObservableSet<Tag>) sender;
 							foreach(var tag in c)
 							{
-								facade.BindReplace(command, "@tagId", tag.Id);
+								command.BindReplace("@tagId", tag.Id);
 								command.ExecuteNonQuery();
 							}
 						}
@@ -216,14 +216,14 @@ namespace TaxonomyLib
 				if(args.NewItems != null)
 				{
 					using(
-						var command = facade.CreateCommand(connection, @"INSERT INTO tags_files (tagId, fileId) VALUES (@tagId, @fileId)"))
+						var command = connection.CreateCommand(@"INSERT INTO tags_files (tagId, fileId) VALUES (@tagId, @fileId)"))
 					{
-						facade.BindNew(command, "@tagId");
-						facade.BindNew(command, "@fileId");
+						command.BindNew("@tagId");
+						command.BindNew("@fileId");
 						foreach (var newTag in args.NewItems.Cast<Tag>())
 						{
-							facade.BindReplace(command, "@fileId", fileId);
-							facade.BindReplace(command, "@tagId", newTag.Id);
+							command.BindReplace("@fileId", fileId);
+							command.BindReplace("@tagId", newTag.Id);
 							command.ExecuteNonQuery();
 						}
 					}
@@ -231,14 +231,14 @@ namespace TaxonomyLib
 				if(args.OldItems != null)
 				{
 					using(
-						var command = facade.CreateCommand(connection, @"DELETE FROM tags_files WHERE tagId = @tagId AND fileId = @fileId"))
+						var command = connection.CreateCommand(@"DELETE FROM tags_files WHERE tagId = @tagId AND fileId = @fileId"))
 					{
-						facade.BindNew(command, "@tagId");
-						facade.BindNew(command, "@fileId");
+						command.BindNew("@tagId");
+						command.BindNew("@fileId");
 						foreach (var newTag in args.OldItems.Cast<Tag>())
 						{
-							facade.BindReplace(command, "@fileId", fileId);
-							facade.BindReplace(command, "@tagId", newTag.Id);
+							command.BindReplace("@fileId", fileId);
+							command.BindReplace("@tagId", newTag.Id);
 							command.ExecuteNonQuery();
 						}
 					}
@@ -249,13 +249,13 @@ namespace TaxonomyLib
 		public File GetFile(string path)
 		{
 			var relativeToTaxonomyRootPath = PathExt.GetRelativePath(RootPath, Path.GetFullPath(path));
-			return facade.IssueTransaction(connection, commit =>
+			return connection.IssueTransaction(commit =>
 			{
 				File file;
 				using(
-					var command = facade.CreateCommand(connection, @"SELECT * FROM files WHERE path = @path"))
+					var command = connection.CreateCommand(@"SELECT * FROM files WHERE path = @path"))
 				{
-					facade.BindNew(command, "@path", relativeToTaxonomyRootPath);
+					command.BindNew("@path", relativeToTaxonomyRootPath);
 					file = LookupFiles(command).FirstOrDefault();
 				}
 				if(file != null)
@@ -265,12 +265,12 @@ namespace TaxonomyLib
 				var tagCollection = new Lazy<ICollection<Tag>>(() => new ObservableSet<Tag>());
 				file = new File(0, RootPath, relativeToTaxonomyRootPath, tagCollection);
 				using(
-					var command = facade.CreateCommand(connection, @"INSERT INTO files (path, hash) VALUES (@path, @hash)"))
+					var command = connection.CreateCommand(@"INSERT INTO files (path, hash) VALUES (@path, @hash)"))
 				{
-					facade.BindNew(command, "@path", file.RelativePath);
-					facade.BindNew(command, "@hash", file.Hash);
+					command.BindNew("@path", file.RelativePath);
+					command.BindNew("@hash", file.Hash);
 					command.ExecuteNonQuery();
-					id = facade.LastInsertRowIdFor(connection);
+					id = connection.LastInsertRowId();
 				}
 				file.Id = id;
 				commit();
@@ -286,13 +286,13 @@ namespace TaxonomyLib
 
 		}
 
-		private Taxonomy(string path, SQLiteConnection connection)
+		private Taxonomy(string path, SQLConnection connection)
 		{
 			ManagedFile = Path.GetFullPath(path);
 			this.connection = connection;
-			using(var command = new SQLiteCommand(@"SELECT shortName FROM taxonomyMeta", connection))
+			using(var command = connection.CreateCommand(@"SELECT shortName FROM taxonomyMeta"))
 			{
-				ShortName = facade.ExecuteScalar<string>(command);
+				ShortName = command.ExecuteScalar<string>();
 			}
 		}
 
@@ -304,29 +304,29 @@ namespace TaxonomyLib
 		public static Taxonomy CreateNew(string path, string shortName)
 		{
 			var connection = facade.CreateNew(path);
-			facade.Open(connection);
-			facade.IssueSimpleCommand(connection, @"CREATE TABLE taxonomyMeta (
+			connection.Open();
+			connection.IssueSimpleCommand(@"CREATE TABLE taxonomyMeta (
 				version INTEGER,
 				shortName TEXT)");
-			using(var command = facade.CreateCommand(connection, @"INSERT INTO taxonomyMeta VALUES (1, @shortName)"))
+			using(var command = connection.CreateCommand(@"INSERT INTO taxonomyMeta VALUES (1, @shortName)"))
 			{
-				facade.BindNew(command, "@shortName", shortName);
+				command.BindNew("@shortName", shortName);
 				command.ExecuteNonQuery();
 			}
-			facade.IssueSimpleCommand(connection, @"CREATE TABLE files (
+			connection.IssueSimpleCommand(@"CREATE TABLE files (
 				fileId INTEGER PRIMARY KEY,
 				path TEXT UNIQUE NOT NULL,
 				hash BLOB NOT NULL)");
-			facade.IssueSimpleCommand(connection, @"CREATE TABLE namespaces (
+			connection.IssueSimpleCommand(@"CREATE TABLE namespaces (
 				namespaceId INTEGER PRIMARY KEY,
 				name TEXT UNIQUE NOT NULL ON CONFLICT IGNORE)");
-			facade.IssueSimpleCommand(connection, @"CREATE TABLE tags (
+			connection.IssueSimpleCommand(@"CREATE TABLE tags (
 				tagId INTEGER PRIMARY KEY,
 				name TEXT NOT NULL,
 				namespaceId INTEGER,
 				FOREIGN KEY(namespaceId) REFERENCES namespaces(namespaceId),
 				UNIQUE (namespaceId, name) ON CONFLICT IGNORE)");
-			facade.IssueSimpleCommand(connection, @"CREATE TABLE tags_files (
+			connection.IssueSimpleCommand(@"CREATE TABLE tags_files (
 				tagId INTEGER,
 				fileId INTEGER,
 				FOREIGN KEY(tagId) REFERENCES namespaces(tagId),
@@ -335,8 +335,8 @@ namespace TaxonomyLib
 			return new Taxonomy(path, connection);
 		}
 
-		private static readonly SQLiteFacade<SQLiteConnection, SQLiteCommand> facade = new SQLiteFacadeData();
-		private SQLiteConnection connection;
+		private static readonly SQLiteFacade facade = new SQLiteFacadeData();
+		private SQLConnection connection;
 		private readonly Dictionary<long, WeakReference<File>> fileCache = new Dictionary<long, WeakReference<File>>();
 		private readonly Dictionary<long, WeakReference<Tag>> tagCache = new Dictionary<long, WeakReference<Tag>>();
 
@@ -348,7 +348,6 @@ namespace TaxonomyLib
 		{
 			if (connection != null)
 			{
-				connection.Close();
 				connection.Dispose();
 				connection = null;
 			}
