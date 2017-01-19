@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SQLite;
 
 namespace TaxonomyLib
@@ -66,6 +67,22 @@ namespace TaxonomyLib
 		public override T ExecuteScalar<T>(SQLiteCommand command)
 		{
 			return (T)command.ExecuteScalar();
+		}
+
+		public override IEnumerable<IDictionary<string, object>> ExecuteQuery(SQLiteCommand query, IReadOnlyCollection<string> names)
+		{
+			using(var reader = query.ExecuteReader())
+			{
+				while(reader.Read())
+				{
+					var dict = new Dictionary<string, object>();
+					foreach(var name in names)
+					{
+						dict.Add(name, reader[name]);
+					}
+					yield return dict;
+				}
+			}
 		}
 
 		public override T IssueTransaction<T>(SQLiteConnection connection, Func<DoCommit, T> func)

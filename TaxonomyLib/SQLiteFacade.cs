@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TaxonomyLib
 {
@@ -17,6 +18,12 @@ namespace TaxonomyLib
 		public abstract void BindNew(TCommand command, string name, object value);
 		public abstract void BindReplace(TCommand command, string name, object value);
 		public abstract T ExecuteScalar<T>(TCommand command);
+		public abstract IEnumerable<IDictionary<string, object>> ExecuteQuery(TCommand query, IReadOnlyCollection<string> names);
+
+		public IEnumerable<IDictionary<string, object>> ExecuteQuery(TCommand query, params string[] names)
+		{
+			return ExecuteQuery(query, (IReadOnlyCollection<string>)names);
+		}
 
 		public delegate void DoCommit();
 		public abstract T IssueTransaction<T>(TConnection connection, Func<DoCommit, T> func);

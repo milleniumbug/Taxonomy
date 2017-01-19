@@ -42,7 +42,7 @@ namespace TaxonomyLib
 
 		public override void BindNew(SQLiteCommand command, string name)
 		{
-			
+
 		}
 
 		public override void BindNew(SQLiteCommand command, string name, object value)
@@ -62,7 +62,23 @@ namespace TaxonomyLib
 
 		public override T IssueTransaction<T>(SQLiteConnection connection, Func<DoCommit, T> func)
 		{
-			throw new NotImplementedException();
+			connection.BeginTransaction();
+			T value;
+			bool isCommited = false;
+			try
+			{
+				value = func(() =>
+				{
+					connection.Commit();
+					isCommited = true;
+				});
+			}
+			finally
+			{
+				if(!isCommited)
+					connection.Rollback();
+			}
+			return value;
 		}
 	}
 }
