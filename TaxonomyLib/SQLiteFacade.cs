@@ -39,7 +39,7 @@ namespace TaxonomyLib
 		public abstract void Dispose();
 	}
 
-	public abstract class SQLReader : IDisposable
+	internal abstract class SQLReader : IDisposable
 	{
 		public abstract bool Read();
 		public abstract object this[string key] { get; }
