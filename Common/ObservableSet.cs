@@ -33,7 +33,6 @@ namespace Common
 	/// <summary>
 	/// A set that notifies about changes.
 	/// </summary>
-	[Serializable]
 	public class ObservableSet<T> : ICollection<T>, INotifyPropertyChanged, INotifyCollectionChanged
 	{
 		private static readonly PropertyChangedEventArgs CountPropertyChangedEventArgs = new PropertyChangedEventArgs(nameof(Count));
