@@ -58,6 +58,8 @@
     <Compile Include="Namespace.cs" />
     <Compile Include="Nothing.cs" />
     <Compile Include="PathExt.cs" />
+    <Compile Include="SQLiteFacade.cs" />
+    <Compile Include="SQLiteFacadeNETFramework.cs" />
     <Compile Include="Tag.cs" />
     <Compile Include="TagName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
