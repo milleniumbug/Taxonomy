@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Data;
-using System.Data.Common;
 using System.Data.SQLite;
-using System.Data.SQLite.Linq;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Common;
 
 namespace TaxonomyLib
