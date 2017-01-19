@@ -16,6 +16,7 @@ namespace TaxonomyLib
 {
 	public class Taxonomy : IDisposable
 	{
+
 		public IEnumerable<File> LookupFilesByTags(IReadOnlyCollection<Tag> tags)
 		{
 			return LookupFiles(FileLookupQueryGenerate(false, tags.Count, tags, null));
@@ -183,7 +184,7 @@ namespace TaxonomyLib
 					command.Parameters.Add(new SQLiteParameter("@nsName", DbType.String));
 					command.Parameters["@nsName"].Value = ns.Component;
 					command.ExecuteNonQuery();
-					id = connection.LastInsertRowId;
+					id = facade.LastInsertRowIdFor(connection);
 				}
 
 				transaction.Commit();
@@ -282,7 +283,7 @@ namespace TaxonomyLib
 					command.Parameters["@path"].Value = file.RelativePath;
 					command.Parameters["@hash"].Value = file.Hash;
 					command.ExecuteNonQuery();
-					id = connection.LastInsertRowId;
+					id = facade.LastInsertRowIdFor(connection);
 				}
 				file.Id = id;
 				transaction.Commit();
@@ -315,54 +316,39 @@ namespace TaxonomyLib
 
 		public static Taxonomy CreateNew(string path, string shortName)
 		{
-			SQLiteConnection.CreateFile(path);
-			SQLiteConnection connection = new SQLiteConnection($"Data Source={path};Version=3");
+			var connection = facade.CreateNew(path);
 			connection.Open();
-			using(var command = new SQLiteCommand(@"CREATE TABLE taxonomyMeta (
+			facade.IssueSimpleCommand(connection, @"CREATE TABLE taxonomyMeta (
 				version INTEGER,
-				shortName TEXT)", connection))
-			{
-				command.ExecuteNonQuery();
-			}
+				shortName TEXT)");
 			using(var command = new SQLiteCommand(@"INSERT INTO taxonomyMeta VALUES (1, @shortName)", connection))
 			{
 				command.Parameters.AddWithValue("@shortName", shortName);
 				command.ExecuteNonQuery();
 			}
-			using(var command = new SQLiteCommand(@"CREATE TABLE files (
+			facade.IssueSimpleCommand(connection, @"CREATE TABLE files (
 				fileId INTEGER PRIMARY KEY,
 				path TEXT UNIQUE NOT NULL,
-				hash BLOB NOT NULL)", connection))
-			{
-				command.ExecuteNonQuery();
-			}
-			using(var command = new SQLiteCommand(@"CREATE TABLE namespaces (
+				hash BLOB NOT NULL)");
+			facade.IssueSimpleCommand(connection, @"CREATE TABLE namespaces (
 				namespaceId INTEGER PRIMARY KEY,
-				name TEXT UNIQUE NOT NULL ON CONFLICT IGNORE)", connection))
-			{
-				command.ExecuteNonQuery();
-			}
-			using(var command = new SQLiteCommand(@"CREATE TABLE tags (
+				name TEXT UNIQUE NOT NULL ON CONFLICT IGNORE)");
+			facade.IssueSimpleCommand(connection, @"CREATE TABLE tags (
 				tagId INTEGER PRIMARY KEY,
 				name TEXT NOT NULL,
 				namespaceId INTEGER,
 				FOREIGN KEY(namespaceId) REFERENCES namespaces(namespaceId),
-				UNIQUE (namespaceId, name) ON CONFLICT IGNORE)", connection))
-			{
-				command.ExecuteNonQuery();
-			}
-			using(var command = new SQLiteCommand(@"CREATE TABLE tags_files (
+				UNIQUE (namespaceId, name) ON CONFLICT IGNORE)");
+			facade.IssueSimpleCommand(connection, @"CREATE TABLE tags_files (
 				tagId INTEGER,
 				fileId INTEGER,
 				FOREIGN KEY(tagId) REFERENCES namespaces(tagId),
 				FOREIGN KEY(fileId) REFERENCES namespaces(fileId),
-				UNIQUE (tagId, fileId) ON CONFLICT IGNORE)", connection))
-			{
-				command.ExecuteNonQuery();
-			}
+				UNIQUE (tagId, fileId) ON CONFLICT IGNORE)");
 			return new Taxonomy(path, connection);
 		}
 
+		private static readonly SQLiteFacade<SQLiteConnection, SQLiteCommand> facade = new SQLiteFacadeData();
 		private SQLiteConnection connection;
 		private readonly Dictionary<long, WeakReference<File>> fileCache = new Dictionary<long, WeakReference<File>>();
 		private readonly Dictionary<long, WeakReference<Tag>> tagCache = new Dictionary<long, WeakReference<Tag>>();
