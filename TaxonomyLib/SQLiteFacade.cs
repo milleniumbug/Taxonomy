@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.SQLite;
 
@@ -30,12 +31,18 @@ namespace TaxonomyLib
 		public abstract void BindReplace(string name, object value);
 		public abstract T ExecuteScalar<T>();
 		public abstract void ExecuteNonQuery();
-		public abstract SQLiteDataReader ExecuteReader();
-		public abstract IEnumerable<IDictionary<string, object>> ExecuteQuery(IReadOnlyCollection<string> names);
-		public IEnumerable<IDictionary<string, object>> ExecuteQuery(params string[] names)
+		public abstract SQLReader ExecuteReader(IReadOnlyCollection<string> names);
+		public SQLReader ExecuteReader(params string[] names)
 		{
-			return ExecuteQuery((IReadOnlyCollection<string>)names);
+			return ExecuteReader((IReadOnlyCollection<string>)names);
 		}
+		public abstract void Dispose();
+	}
+
+	public abstract class SQLReader : IDisposable
+	{
+		public abstract bool Read();
+		public abstract object this[string key] { get; }
 		public abstract void Dispose();
 	}
 }

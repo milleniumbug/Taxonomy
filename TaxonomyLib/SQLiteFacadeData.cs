@@ -100,30 +100,52 @@ namespace TaxonomyLib
 			command.ExecuteNonQuery();
 		}
 
-		public override SQLiteDataReader ExecuteReader()
+		public override SQLReader ExecuteReader(IReadOnlyCollection<string> names)
 		{
-			return command.ExecuteReader();
-		}
-
-		public override IEnumerable<IDictionary<string, object>> ExecuteQuery(IReadOnlyCollection<string> names)
-		{
-			using (var reader = command.ExecuteReader())
-			{
-				while (reader.Read())
-				{
-					var dict = new Dictionary<string, object>();
-					foreach (var name in names)
-					{
-						dict.Add(name, reader[name]);
-					}
-					yield return dict;
-				}
-			}
+			return new SQLReaderData(command.ExecuteReader(), names);
 		}
 
 		public override void Dispose()
 		{
 			command.Dispose();
+		}
+	}
+
+	internal class SQLReaderData : SQLReader
+	{
+		private readonly IReadOnlyCollection<string> names;
+		private readonly SQLiteDataReader reader;
+		private Dictionary<string, object> current;
+
+		public SQLReaderData(SQLiteDataReader reader, IReadOnlyCollection<string> names)
+		{
+			this.names = names;
+			this.reader = reader;
+		}
+
+		public override bool Read()
+		{
+			bool canContinue = reader.Read();
+			if(canContinue)
+			{
+				current = new Dictionary<string, object>();
+				foreach(var name in names)
+				{
+					current.Add(name, reader[name]);
+				}
+			}
+			else
+			{
+				current = null;
+			}
+			return canContinue;
+		}
+
+		public override object this[string key] => current[key];
+
+		public override void Dispose()
+		{
+			reader.Dispose();
 		}
 	}
 }

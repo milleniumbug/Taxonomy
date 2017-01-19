@@ -15,8 +15,8 @@ namespace TaxonomyLib
 			return LookupFiles(FileLookupQueryGenerate(false, tags.Count, tags, null));
 		}
 
-		private TItem Lookup<TItem>(SQLiteDataReader reader, string idName, Dictionary<long, WeakReference<TItem>> cache,
-			Func<SQLiteDataReader, TItem> factory, Func<TItem, long> idExtractor) where TItem : class
+		private TItem Lookup<TItem>(SQLReader reader, string idName, Dictionary<long, WeakReference<TItem>> cache,
+			Func<SQLReader, TItem> factory, Func<TItem, long> idExtractor) where TItem : class
 		{
 			TItem item;
 			WeakReference<TItem> fileReference;
@@ -36,7 +36,7 @@ namespace TaxonomyLib
 		{
 			using(var cmd = command)
 			{
-				using(var reader = cmd.ExecuteReader())
+				using(var reader = cmd.ExecuteReader("fileId", "path", "hash"))
 				{
 					while (reader.Read())
 					{
@@ -93,7 +93,7 @@ namespace TaxonomyLib
 		{
 			using(var command = connection.CreateCommand(@"SELECT * FROM namespaces"))
 			{
-				using(var reader = command.ExecuteReader())
+				using(var reader = command.ExecuteReader("name"))
 				{
 					while(reader.Read())
 					{
@@ -119,7 +119,7 @@ namespace TaxonomyLib
 			using (var command = connection.CreateCommand(sql))
 			{
 				command.BindNew("@fileId", fileId);
-				using(SQLiteDataReader reader = command.ExecuteReader())
+				using(var reader = command.ExecuteReader("tagId", "namespaceName", "name"))
 				{
 					while(reader.Read())
 					{
@@ -141,7 +141,7 @@ namespace TaxonomyLib
 			using (var command = connection.CreateCommand(@"SELECT * FROM tags WHERE namespaceId = (SELECT namespaceId FROM namespaces WHERE name = @name)"))
 			{
 				command.BindNew("@name", ns.Component);
-				using (SQLiteDataReader reader = command.ExecuteReader())
+				using(var reader = command.ExecuteReader("tagId", "name"))
 				{
 					while (reader.Read())
 					{

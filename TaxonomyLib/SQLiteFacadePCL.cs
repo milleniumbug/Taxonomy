@@ -77,7 +77,7 @@ namespace TaxonomyLib
 	{
 		private readonly SQLiteCommand command;
 
-		public override System.Data.SQLite.SQLiteDataReader ExecuteReader()
+		public override SQLReader ExecuteReader(IReadOnlyCollection<string> names)
 		{
 			throw new NotImplementedException();
 		}
@@ -112,14 +112,27 @@ namespace TaxonomyLib
 			throw new NotImplementedException();
 		}
 
-		public override IEnumerable<IDictionary<string, object>> ExecuteQuery(IReadOnlyCollection<string> names)
+		public override void Dispose()
+		{
+			
+		}
+	}
+
+	internal class SQLReaderPCL : SQLReader
+	{
+		public override bool Read()
 		{
 			throw new NotImplementedException();
 		}
 
+		public override object this[string key]
+		{
+			get { throw new NotImplementedException(); }
+		}
+
 		public override void Dispose()
 		{
-			
+			throw new NotImplementedException();
 		}
 	}
 }
