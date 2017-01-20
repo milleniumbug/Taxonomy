@@ -23,6 +23,8 @@ namespace TaxonomyWpf
 		private const uint SHGFI_SMALLICON = 0x1;    // 'Small icon
 		private const uint SHGFI_USEFILEATTRIBUTES = 0x10;
 
+		private const uint FILE_ATTRIBUTE_NORMAL = 0x80;
+
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
 		private static extern IntPtr SHGetFileInfo(
 			string pszPath,
@@ -55,17 +57,27 @@ namespace TaxonomyWpf
 			
 		}
 
+		public static HIcon GetGenericFileIcon()
+		{
+			return GetHIconForFile("generic_file", FILE_ATTRIBUTE_NORMAL, SHGFI_ICON | SHGFI_LARGEICON | SHGFI_USEFILEATTRIBUTES);
+		}
+
 		public static HIcon GetHIconForFile(string path)
+		{
+			return GetHIconForFile(path, 0, SHGFI_ICON | SHGFI_LARGEICON);
+		}
+
+		public static HIcon GetHIconForFile(string path, uint fileAttributes, uint flags)
 		{
 			IntPtr hImg;
 			string fName = path;
 			SHFILEINFO shinfo = new SHFILEINFO();
 			hImg = SHGetFileInfo(
 				fName,
-				0,
+				fileAttributes,
 				ref shinfo,
 				(uint)Marshal.SizeOf(shinfo),
-				SHGFI_ICON | SHGFI_LARGEICON);
+				flags);
 
 			// TODO: "You should call this function from a background thread. Failure to do so could cause the UI to stop responding."
 

@@ -28,15 +28,7 @@
             Height="32"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Source="{Binding Icon}">
-            <Image.InputBindings>
-                <MouseBinding
-                    Command="{Binding IconDoubleClick, RelativeSource={RelativeSource AncestorType=Window}}"
-                    CommandParameter="{Binding .}"
-                    Gesture="LeftDoubleClick" />
-            </Image.InputBindings>
-
-        </Image>
+            Source="{Binding Icon}" />
 
         <TextBlock
             Grid.Row="1"
@@ -44,5 +36,11 @@
             VerticalAlignment="Center"
             Text="{Binding Name}"
             TextWrapping="Wrap" />
+        <Grid.InputBindings>
+            <MouseBinding
+                Command="{Binding IconDoubleClick, RelativeSource={RelativeSource AncestorType=Window}}"
+                CommandParameter="{Binding .}"
+                Gesture="LeftDoubleClick" />
+        </Grid.InputBindings>
     </Grid>
 </UserControl>

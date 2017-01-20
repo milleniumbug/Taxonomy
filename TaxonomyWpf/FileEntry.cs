@@ -5,21 +5,33 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using TaxonomyLib;
 
 namespace TaxonomyWpf
 {
-	public class FileEntry
+	public class FileEntry : INotifyPropertyChanged
 	{
-		private readonly Lazy<ImageSource> icon;
-		public ImageSource Icon => icon.Value;
+		private ImageSource icon = null;
+
+		public ImageSource Icon
+		{
+			get
+			{
+				if(icon == null)
+					return icon = LoadIcon(Path);
+				return icon;
+			}
+		}
 
 		public string Name => System.IO.Path.GetFileName(Path);
 
@@ -48,6 +60,24 @@ namespace TaxonomyWpf
 			}
 		}
 
+		private static ImageSource LoadIcon(string path)
+		{
+			return LoadIcon(path, p => NativeExplorerInterface.GetHIconForFile(path));
+		}
+
+		private static ImageSource LoadIcon(string path, Func<string, NativeExplorerInterface.HIcon> load)
+		{
+			using (var extractedIcon = load(path))
+			{
+				var icon = Imaging.CreateBitmapSourceFromHIcon(
+					extractedIcon.IconHandle,
+					Int32Rect.Empty,
+					BitmapSizeOptions.FromEmptyOptions());
+				icon.Freeze();
+				return icon;
+			}
+		}
+
 		public string Path { get; }
 
 		public FileEntry(TaxonomyLib.File file, string path, Taxonomy taxonomy)
@@ -55,16 +85,13 @@ namespace TaxonomyWpf
 			this.file = file;
 			Path = path;
 			this.taxonomy = new WeakReference<Taxonomy>(taxonomy);
-			icon = new Lazy<ImageSource>(() =>
-			{
-				using(var extractedIcon = NativeExplorerInterface.GetHIconForFile(Path))
-				{
-					return Imaging.CreateBitmapSourceFromHIcon(
-						extractedIcon.IconHandle,
-						Int32Rect.Empty,
-						BitmapSizeOptions.FromEmptyOptions());
-				}
-			});
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }
