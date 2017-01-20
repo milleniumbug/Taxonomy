@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Common;
 using NUnit.Framework;
 using TaxonomyLib;
 
@@ -56,6 +57,15 @@ namespace Tests
 			CollectionAssert.AreEquivalent(new[] {firstFile, thirdFile}, taxonomy.LookupFilesByTags(new[] {firstTag}).ToList());
 			CollectionAssert.AreEqual(new[] { rodzaj }, taxonomy.AllNamespaces().ToList());
 			CollectionAssert.AreEquivalent(new[] { firstTag, secondTag }, taxonomy.TagsInNamespace(rodzaj).ToList());
+		}
+
+		[Test]
+		public void RollingWindowTestWindowLongerThanList()
+		{
+			var t = Enumerable.Repeat(0, 50).Select((_, index) => index).ToList();
+			var actual = t.RollingWindow(100).ToList();
+			Assert.AreEqual(1, actual.Count);
+			CollectionAssert.AreEqual(t, actual.First().ToList());
 		}
 
 		static void Main()
