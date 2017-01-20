@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Common;
 
 namespace TaxonomyWpf
 {
@@ -15,28 +16,6 @@ namespace TaxonomyWpf
 			}
 		}
 
-		private static IEnumerable<IEnumerable<TItem>> RollingWindow<TItem>(IEnumerable<TItem> @this, int width)
-		{
-			using(var enumerator = @this.GetEnumerator())
-			{
-				int i = 0;
-				var chunk = new List<TItem>(width);
-				while(enumerator.MoveNext())
-				{
-					chunk.Add(enumerator.Current);
-					++i;
-					if(i == width)
-					{
-						yield return chunk;
-						chunk = new List<TItem>(width);
-						i = 0;
-					}
-				}
-				if(chunk.Count != 0)
-					yield return chunk;
-			}
-		}
-
 		private readonly int length = 2000;
 		private readonly int width = 16;
 
@@ -46,7 +25,7 @@ namespace TaxonomyWpf
 		{
 			get
 			{
-				return string.Join("\n", RollingWindow(Bytes, width)
+				return string.Join("\n", Bytes.RollingWindow(width)
 					.Select(line => line.ToList())
 					.Select(line => BitConverter.ToString(line.ToArray()).Replace("-", " ") + " " + new string(line.Select(b => b >= 32 && b < 127 ? (char)b : '.').ToArray())));
 			}
