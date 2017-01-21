@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:taxonomyLib="clr-namespace:TaxonomyLib;assembly=TaxonomyLib"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-    Title="MainWindow"
+    Title="Taxonomy"
     mc:Ignorable="d">
     <Window.InputBindings>
         <KeyBinding Key="Escape" Command="{Binding PanicButtonCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
