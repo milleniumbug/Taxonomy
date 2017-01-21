@@ -47,10 +47,16 @@ namespace TaxonomyWpf
 			IconDimensions = Tuple.Create(32, 32);
 			IconDoubleClick = new TrivialCommand<FileEntry>(OnIconDoubleClick);
 			TagDoubleClick = new TrivialCommand<Tag>(OnTagDoubleClick);
-			PanicButtonCommand = new TrivialCommand<object>(_ => SetCurrentValue(WindowStateProperty, WindowState.Minimized));
+			PanicButtonCommand = new TrivialCommand<object>(Panic);
 
 			InitializeComponent();
 			Model = (MainWindowModel)DataContext;
+		}
+
+		private void Panic(object parameter)
+		{
+			Model.CurrentFile = null;
+			SetCurrentValue(WindowStateProperty, WindowState.Minimized);
 		}
 
 		protected override void OnClosed(EventArgs e)

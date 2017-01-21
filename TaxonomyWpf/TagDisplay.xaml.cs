@@ -42,7 +42,7 @@ namespace TaxonomyWpf
 		{
 			var self = (TagDisplay)d;
 			var fileEntry = (FileEntry)e.NewValue;
-			var file = fileEntry.File;
+			var file = fileEntry?.File;
 			self.tags.Clear();
 			if(file != null)
 				self.tags.AddRange(file.Tags
