@@ -142,7 +142,7 @@
                 SelectedItem="{Binding CurrentFile}">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel />
+                        <local:VirtualizingTilePanel ItemHeight="90" ItemWidth="90" />
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
                 <ListView.ItemTemplate>

@@ -129,6 +129,7 @@
     <Compile Include="TextFilePreviewModel.cs" />
     <Compile Include="TrivialCommand.cs" />
     <Compile Include="VideoPreviewModel.cs" />
+    <Compile Include="VirtualizingTilePanel.cs" />
     <Page Include="AddTagDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
