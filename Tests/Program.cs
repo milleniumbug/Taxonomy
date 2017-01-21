@@ -67,10 +67,5 @@ namespace Tests
 			Assert.AreEqual(1, actual.Count);
 			CollectionAssert.AreEqual(t, actual.First().ToList());
 		}
-
-		static void Main()
-		{
-
-		}
 	}
 }
