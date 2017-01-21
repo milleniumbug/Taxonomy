@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Common;
 
 namespace TaxonomyWpf
@@ -30,6 +31,20 @@ namespace TaxonomyWpf
 					.Select(line => BitConverter.ToString(line.ToArray()).Replace("-", " ") + " " + new string(line.Select(b => b >= 32 && b < 127 ? (char)b : '.').ToArray())));
 			}
 		}
+
+		private static readonly List<Encoding> encodings = new List<Encoding>
+		{
+			Encoding.UTF8,
+			Encoding.Unicode,
+			Encoding.BigEndianUnicode,
+			Encoding.UTF32,
+			Encoding.GetEncoding("windows-1252"),
+			Encoding.GetEncoding("windows-1250")
+		};
+
+		public IReadOnlyCollection<Encoding> Encodings => encodings;
+
+		public Encoding SelectedEncoding { get; set; }
 
 		public override void Dispose()
 		{

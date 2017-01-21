@@ -109,6 +109,7 @@
     <Compile Include="ArchivePreviewModel.cs" />
     <Compile Include="BinaryFilePreviewModel.cs" />
     <Compile Include="BoolNegatingConverter.cs" />
+    <Compile Include="EncodingToNameConverter.cs" />
     <Compile Include="FileItem.xaml.cs">
       <DependentUpon>FileItem.xaml</DependentUpon>
     </Compile>

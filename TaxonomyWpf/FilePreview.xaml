@@ -10,119 +10,140 @@
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
-    <ContentPresenter Content="{Binding Model, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FilePreview}}}">
-        <ContentPresenter.ContentTemplateSelector>
-            <local:FilePreviewTemplateSelector>
-                <local:FilePreviewTemplateSelector.NullTemplate>
-                    <DataTemplate DataType="{x:Type local:NullPreviewModel}">
-                        <TextBlock
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Text="No file selected" />
-                    </DataTemplate>
-                </local:FilePreviewTemplateSelector.NullTemplate>
-                <local:FilePreviewTemplateSelector.VideoTemplate>
-                    <DataTemplate DataType="{x:Type local:VideoPreviewModel}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <media:MediaElementWrapper
-                                x:Name="Player"
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="4"
-                                IsMuted="True"
-                                Source="{Binding Source}"
-                                Stretch="Uniform"
-                                MediaEnded="Repeat"/>
-                            <Button
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                Command="MediaCommands.Play"
-                                CommandTarget="{Binding ElementName=Player}"
-                                Content="Play" />
-                            <Button
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Command="MediaCommands.Pause"
-                                CommandTarget="{Binding ElementName=Player}"
-                                Content="Pause" />
-                            <Button
-                                Grid.Row="1"
-                                Grid.Column="2"
-                                Command="MediaCommands.Stop"
-                                CommandTarget="{Binding ElementName=Player}"
-                                Content="Stop" />
-                            <ToggleButton
-                                Grid.Row="1"
-                                Grid.Column="3"
-                                Content="Enable sound"
-                                IsChecked="{Binding IsMuted, ElementName=Player, Converter={x:Static local:BoolNegatingConverter.Default}}" />
-                        </Grid>
-                    </DataTemplate>
-                </local:FilePreviewTemplateSelector.VideoTemplate>
-                <local:FilePreviewTemplateSelector.TextTemplate>
-                    <DataTemplate DataType="{x:Type local:TextFilePreviewModel}">
-                        <TextBox
-                            HorizontalScrollBarVisibility="Disabled"
-                            IsReadOnly="True"
-                            Text="{Binding Text, Mode=OneWay}"
-                            TextWrapping="Wrap"
-                            VerticalScrollBarVisibility="Auto" />
-                    </DataTemplate>
-                </local:FilePreviewTemplateSelector.TextTemplate>
-                <local:FilePreviewTemplateSelector.ImageTemplate>
-                    <DataTemplate DataType="{x:Type local:ImagePreviewModel}">
-                        <Image Source="{Binding Source}" />
-                    </DataTemplate>
-                </local:FilePreviewTemplateSelector.ImageTemplate>
-                <local:FilePreviewTemplateSelector.ArchiveTemplate>
-                    <DataTemplate DataType="{x:Type local:ArchivePreviewModel}">
-                        <ListView ItemsSource="{Binding Entries}" />
-                    </DataTemplate>
-                </local:FilePreviewTemplateSelector.ArchiveTemplate>
-                <local:FilePreviewTemplateSelector.AnimatedGifTemplate>
-                    <DataTemplate DataType="{x:Type local:AnimatedGifPreviewModel}">
-                        <Image gif:AnimationBehavior.RepeatBehavior="Forever" gif:AnimationBehavior.SourceUri="{Binding Source}" />
-                    </DataTemplate>
-                </local:FilePreviewTemplateSelector.AnimatedGifTemplate>
-                <local:FilePreviewTemplateSelector.BinaryTemplate>
-                    <DataTemplate DataType="{x:Type local:BinaryFilePreviewModel}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Button
+            Grid.Row="0"
+            Click="OnOpenAsBinaryFile"
+            Content="Hex Preview" />
+        <ContentPresenter Grid.Row="1" Content="{Binding Model, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FilePreview}}}">
+            <ContentPresenter.ContentTemplateSelector>
+                <local:FilePreviewTemplateSelector>
+                    <local:FilePreviewTemplateSelector.NullTemplate>
+                        <DataTemplate DataType="{x:Type local:NullPreviewModel}">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="No file selected" />
+                        </DataTemplate>
+                    </local:FilePreviewTemplateSelector.NullTemplate>
+                    <local:FilePreviewTemplateSelector.VideoTemplate>
+                        <DataTemplate DataType="{x:Type local:VideoPreviewModel}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <media:MediaElementWrapper
+                                    x:Name="Player"
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="4"
+                                    IsMuted="True"
+                                    MediaEnded="Repeat"
+                                    Source="{Binding Source}"
+                                    Stretch="Uniform" />
+                                <Button
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Command="MediaCommands.Play"
+                                    CommandTarget="{Binding ElementName=Player}"
+                                    Content="Play" />
+                                <Button
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Command="MediaCommands.Pause"
+                                    CommandTarget="{Binding ElementName=Player}"
+                                    Content="Pause" />
+                                <Button
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Command="MediaCommands.Stop"
+                                    CommandTarget="{Binding ElementName=Player}"
+                                    Content="Stop" />
+                                <ToggleButton
+                                    Grid.Row="1"
+                                    Grid.Column="3"
+                                    Content="Enable sound"
+                                    IsChecked="{Binding IsMuted, ElementName=Player, Converter={x:Static local:BoolNegatingConverter.Default}}" />
+                            </Grid>
+                        </DataTemplate>
+                    </local:FilePreviewTemplateSelector.VideoTemplate>
+                    <local:FilePreviewTemplateSelector.TextTemplate>
+                        <DataTemplate DataType="{x:Type local:TextFilePreviewModel}">
                             <TextBox
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="2"
-                                FontFamily="Courier New"
                                 HorizontalScrollBarVisibility="Disabled"
                                 IsReadOnly="True"
-                                Text="{Binding HexifiedContent, Mode=OneWay}"
+                                Text="{Binding Text, Mode=OneWay}"
+                                TextWrapping="Wrap"
                                 VerticalScrollBarVisibility="Auto" />
-                            <Button
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Content="Open as text file" />
-                            <ComboBox Grid.Row="1" Grid.Column="0" />
-                        </Grid>
-                    </DataTemplate>
-                </local:FilePreviewTemplateSelector.BinaryTemplate>
-            </local:FilePreviewTemplateSelector>
-        </ContentPresenter.ContentTemplateSelector>
-    </ContentPresenter>
+                        </DataTemplate>
+                    </local:FilePreviewTemplateSelector.TextTemplate>
+                    <local:FilePreviewTemplateSelector.ImageTemplate>
+                        <DataTemplate DataType="{x:Type local:ImagePreviewModel}">
+                            <Image Source="{Binding Source}" />
+                        </DataTemplate>
+                    </local:FilePreviewTemplateSelector.ImageTemplate>
+                    <local:FilePreviewTemplateSelector.ArchiveTemplate>
+                        <DataTemplate DataType="{x:Type local:ArchivePreviewModel}">
+                            <ListView ItemsSource="{Binding Entries}" />
+                        </DataTemplate>
+                    </local:FilePreviewTemplateSelector.ArchiveTemplate>
+                    <local:FilePreviewTemplateSelector.AnimatedGifTemplate>
+                        <DataTemplate DataType="{x:Type local:AnimatedGifPreviewModel}">
+                            <Image gif:AnimationBehavior.RepeatBehavior="Forever" gif:AnimationBehavior.SourceUri="{Binding Source}" />
+                        </DataTemplate>
+                    </local:FilePreviewTemplateSelector.AnimatedGifTemplate>
+                    <local:FilePreviewTemplateSelector.BinaryTemplate>
+                        <DataTemplate DataType="{x:Type local:BinaryFilePreviewModel}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="2"
+                                    FontFamily="Courier New"
+                                    HorizontalScrollBarVisibility="Disabled"
+                                    IsReadOnly="True"
+                                    Text="{Binding HexifiedContent, Mode=OneWay}"
+                                    VerticalScrollBarVisibility="Auto" />
+                                <Button
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Click="OnOpenAsTextFile"
+                                    Content="Open as text file" />
+                                <ComboBox
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    ItemsSource="{Binding Encodings}"
+                                    SelectedItem="{Binding SelectedEncoding}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding ., Converter={x:Static local:EncodingToNameConverter.Default}}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </Grid>
+                        </DataTemplate>
+                    </local:FilePreviewTemplateSelector.BinaryTemplate>
+                </local:FilePreviewTemplateSelector>
+            </ContentPresenter.ContentTemplateSelector>
+        </ContentPresenter>
+    </Grid>
 </UserControl>

@@ -102,5 +102,25 @@ namespace TaxonomyWpf
 			var mediaElementWrapper = (MediaElementWrapper)sender;
 			mediaElementWrapper.Play();
 		}
+
+		private void OnOpenAsTextFile(object sender, RoutedEventArgs e)
+		{
+			var selectedEncoding = ((BinaryFilePreviewModel) Model).SelectedEncoding;
+			if(selectedEncoding == null)
+			{
+				MessageBox.Show("Please select an encoding");
+				return;
+			}
+			Model?.Dispose();
+			Model = new TextFilePreviewModel(FilePath, selectedEncoding);
+		}
+
+		private void OnOpenAsBinaryFile(object sender, RoutedEventArgs e)
+		{
+			if(Model is NullPreviewModel)
+				return;
+			Model?.Dispose();
+			Model = new BinaryFilePreviewModel(FilePath);
+		}
 	}
 }
