@@ -8,10 +8,11 @@
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
+    <!--  adding a background allows reacting to double clicks  -->
     <Grid
         Width="74"
         Height="74"
-        Margin="3,3,3,3"
+        Background="Transparent"
         Tag="{Binding .}">
         <Grid.ToolTip>
             <TextBlock Text="{Binding Name}" />
