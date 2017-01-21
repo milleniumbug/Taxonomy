@@ -34,6 +34,8 @@ namespace TaxonomyWpf
 
 		public Tuple<int, int> IconDimensions { get; }
 
+		public ICommand PanicButtonCommand { get; }
+
 		public ICommand IconDoubleClick { get; }
 
 		public ICommand TagDoubleClick { get; }
@@ -45,6 +47,7 @@ namespace TaxonomyWpf
 			IconDimensions = Tuple.Create(32, 32);
 			IconDoubleClick = new TrivialCommand<FileEntry>(OnIconDoubleClick);
 			TagDoubleClick = new TrivialCommand<Tag>(OnTagDoubleClick);
+			PanicButtonCommand = new TrivialCommand<object>(_ => SetCurrentValue(WindowStateProperty, WindowState.Minimized));
 
 			InitializeComponent();
 			Model = (MainWindowModel)DataContext;

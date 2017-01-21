@@ -9,6 +9,10 @@
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     Title="MainWindow"
     mc:Ignorable="d">
+    <Window.InputBindings>
+        <KeyBinding Key="Escape" Command="{Binding PanicButtonCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+        <KeyBinding Key="B" Command="{Binding PanicButtonCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+    </Window.InputBindings>
     <Window.DataContext>
         <local:MainWindowModel />
     </Window.DataContext>
