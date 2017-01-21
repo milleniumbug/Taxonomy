@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Gu.Wpf.Media;
 
 namespace TaxonomyWpf
 {
@@ -94,6 +95,12 @@ namespace TaxonomyWpf
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		private void Repeat(object sender, RoutedEventArgs e)
+		{
+			var mediaElementWrapper = (MediaElementWrapper)sender;
+			mediaElementWrapper.Play();
 		}
 	}
 }
