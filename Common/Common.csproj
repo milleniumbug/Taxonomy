@@ -34,15 +34,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <!-- A reference to the entire .NET Framework is automatically included -->
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Cache.cs" />
     <Compile Include="LinqExtensions.cs" />
     <Compile Include="ObservableBatchCollection.cs" />
     <Compile Include="ObservableSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Gu.Analyzers.0.1.11.8-dev\analyzers\dotnet\cs\Gu.Analyzers.Analyzers.dll" />
