@@ -8,7 +8,7 @@ namespace Common
 {
 	public static class LinqExtensions
 	{
-		public static IEnumerable<IEnumerable<TItem>> RollingWindow<TItem>(this IEnumerable<TItem> @this, int width)
+		public static IEnumerable<IEnumerable<TItem>> SplitToChunks<TItem>(this IEnumerable<TItem> @this, int width)
 		{
 			using (var enumerator = @this.GetEnumerator())
 			{
