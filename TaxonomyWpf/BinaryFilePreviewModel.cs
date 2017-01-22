@@ -26,7 +26,7 @@ namespace TaxonomyWpf
 		{
 			get
 			{
-				return string.Join("\n", Bytes.RollingWindow(width)
+				return string.Join("\n", Bytes.SplitToChunks(width)
 					.Select(line => line.ToList())
 					.Select(line => BitConverter.ToString(line.ToArray()).Replace("-", " ") + " " + new string(line.Select(b => b >= 32 && b < 127 ? (char)b : '.').ToArray())));
 			}

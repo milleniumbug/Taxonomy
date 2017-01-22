@@ -63,7 +63,7 @@ namespace Tests
 		public void RollingWindowTestWindowLongerThanList()
 		{
 			var t = Enumerable.Repeat(0, 50).Select((_, index) => index).ToList();
-			var actual = t.RollingWindow(100).ToList();
+			var actual = t.SplitToChunks(100).ToList();
 			Assert.AreEqual(1, actual.Count);
 			CollectionAssert.AreEqual(t, actual.First().ToList());
 		}
