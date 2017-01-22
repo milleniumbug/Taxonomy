@@ -209,6 +209,7 @@
   <ItemGroup>
     <Analyzer Include="..\packages\Gu.Analyzers.0.1.11.7-dev\analyzers\dotnet\cs\Gu.Analyzers.Analyzers.dll" />
     <Analyzer Include="..\packages\Gu.Analyzers.0.1.11.7-dev\analyzers\dotnet\cs\Gu.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\Gu.Analyzers.0.1.11.8-dev\analyzers\dotnet\cs\Gu.Analyzers.Analyzers.dll" />
     <Analyzer Include="..\packages\WpfAnalyzers.0.2.7.6\analyzers\dotnet\cs\WpfAnalyzers.Analyzers.dll" />
     <Analyzer Include="..\packages\WpfAnalyzers.0.2.7.6\analyzers\dotnet\cs\WpfAnalyzers.CodeFixes.dll" />
   </ItemGroup>
