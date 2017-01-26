@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="TaxonomyMobile.TaxonomyPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:taxonomyMobile="clr-namespace:TaxonomyMobile;assembly=TaxonomyMobile.Droid"
+    Title="Taxonomies">
+    <ContentPage.BindingContext>
+        <taxonomyMobile:TaxonomyPageModel />
+    </ContentPage.BindingContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Text="Select the taxonomy:" />
+        <ListView
+            Grid.Row="1"
+            ItemTapped="TaxonomyOpened"
+            ItemsSource="{Binding Taxonomies}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Path}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+    </Grid>
+</ContentPage>

@@ -29,5 +29,14 @@ namespace Common
 					yield return chunk;
 			}
 		}
+
+		// expected usage:
+		// enumerable_of_derived.Upcast<Base>().DoOperationsOnIEnumerableOfBase()
+		// As opposed to .Cast<Target>(), this one will not compile if the
+		// target type can't be converted in all cases
+		public static IEnumerable<T> Upcast<T>(this IEnumerable<T> @this)
+		{
+			return @this;
+		}
 	}
 }

@@ -5,11 +5,11 @@ using System.Text;
 
 namespace TaxonomyMobile
 {
-    public class MainPageModel
+    public class TaxonomyPageModel
     {
 		public ObservableCollection<TaxonomyItem> Taxonomies { get; }
 
-	    public MainPageModel()
+	    public TaxonomyPageModel()
 	    {
 		    Taxonomies = new ObservableCollection<TaxonomyItem>() {new TaxonomyItem("asdf"), new TaxonomyItem("lol")};
 
