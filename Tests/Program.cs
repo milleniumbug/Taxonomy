@@ -108,6 +108,25 @@ namespace Tests
 		}
 
 		[Test]
+		public void ShouldFailOnCreatingNewTaxonomyWhenThePathIsAActuallyADirectory()
+		{
+			Assert.Throws<IOException>(() =>
+			{
+				using (var t = Taxonomy.CreateNew(@"testdata/simpledirectory", "test taxonomy"))
+				{
+
+				}
+			});
+			Assert.Throws<IOException>(() =>
+			{
+				using (var t = Taxonomy.CreateNew(@"testdata/simpledirectory/", "test taxonomy"))
+				{
+
+				}
+			});
+		}
+
+		[Test]
 		public void ShouldFailOnOpeningNonExistingTaxonomy()
 		{
 			string nonexistingPath = @"testdata/does_not_exist.aaaaaa";
@@ -122,11 +141,36 @@ namespace Tests
 		}
 
 		[Test]
+		public void ShouldFailOnOpeningADirectoryAsATaxonomy()
+		{
+			Assert.Throws<FileNotFoundException>(() =>
+			{
+				using (var t = new Taxonomy(@"testdata/simpledirectory"))
+				{
+
+				}
+			});
+		}
+
+		[Test]
 		public void TaxonomyProperties()
 		{
 			Assert.AreEqual(taxonomyAbsolutePath, taxonomy.ManagedFile);
 			Assert.AreEqual(shortName, taxonomy.ShortName);
 			Assert.AreEqual(Path.Combine(projectDirectory, @"testdata"), taxonomy.RootPath);
+		}
+
+		[Test]
+		public void GetFileCalledOnNotAFile()
+		{
+			Assert.Throws<NotAFileException>(() =>
+			{
+				var file = taxonomy.GetFile(@"testdata/simpledirectory");
+			});
+			Assert.Throws<NotAFileException>(() =>
+			{
+				var file = taxonomy.GetFile(@"testdata/simpledirectory/");
+			});
 		}
 	}
 }
