@@ -19,6 +19,7 @@ namespace Tests
 		private readonly string taxonomyRelativePath = @"testdata\test.sql";
 		private string taxonomyAbsolutePath;
 		private readonly string shortName = "test taxonomy";
+		private readonly string nonexistingPath = @"testdata/does_not_exist.aaaaaa";
 		private Taxonomy taxonomy;
 
 		[OneTimeSetUp]
@@ -40,6 +41,8 @@ namespace Tests
 		public void TearDown()
 		{
 			taxonomy.Dispose();
+			System.IO.File.Delete(taxonomyAbsolutePath);
+			System.IO.File.Delete(nonexistingPath);
 		}
 
 		[Test]
@@ -129,8 +132,6 @@ namespace Tests
 		[Test]
 		public void ShouldFailOnOpeningNonExistingTaxonomy()
 		{
-			string nonexistingPath = @"testdata/does_not_exist.aaaaaa";
-			System.IO.File.Delete(nonexistingPath);
 			Assert.Throws<FileNotFoundException>(() =>
 			{
 				using(var t = Taxonomy.CreateNew(nonexistingPath, "test taxonomy"))
