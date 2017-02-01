@@ -179,7 +179,7 @@ namespace TaxonomyLib
 				return file;
 			}
 		}
-
+		/*
 		public IEnumerable<File> LookupFilesByTags(IReadOnlyCollection<Tag> tags)
 		{
 			return LookupFiles(FileLookupQueryGenerate(false, tags.Count, tags, null));
@@ -189,7 +189,7 @@ namespace TaxonomyLib
 		{
 			return LookupFiles(FileLookupQueryGenerate(true, tags.Count, tags, name));
 		}
-
+		*/
 		public string ManagedFile { get; }
 		public string RootPath => Path.GetDirectoryName(ManagedFile);
 
