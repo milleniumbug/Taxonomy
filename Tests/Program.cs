@@ -84,7 +84,6 @@ namespace Tests
 		}
 
 		[Test]
-		[Ignore("not implemented")]
 		public void ShouldFailOnCreatingNewTaxonomyWhenAFileExists()
 		{
 			var file = new FileInfo(@"testdata/a_file");
@@ -109,7 +108,6 @@ namespace Tests
 		}
 
 		[Test]
-		[Ignore("not implemented")]
 		public void ShouldFailOnOpeningNonExistingTaxonomy()
 		{
 			string nonexistingPath = @"testdata/does_not_exist.aaaaaa";
