@@ -112,9 +112,11 @@ namespace Tests
 		[Ignore("not implemented")]
 		public void ShouldFailOnOpeningNonExistingTaxonomy()
 		{
+			string nonexistingPath = @"testdata/does_not_exist.aaaaaa";
+			System.IO.File.Delete(nonexistingPath);
 			Assert.Throws<FileNotFoundException>(() =>
 			{
-				using(var t = Taxonomy.CreateNew(@"testdata/does_not_exist.aaaaaa", "test taxonomy"))
+				using(var t = Taxonomy.CreateNew(nonexistingPath, "test taxonomy"))
 				{
 
 				}
