@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -53,7 +54,13 @@ namespace TaxonomyMobile
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
-	}
+
+		public FileListModel()
+		{
+			//ChangeDirectory(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath);
+			ChangeDirectory(AppCompat.GetExternalSdCardLocation());
+		}
+	} 
 
 	internal class FileItem
 	{

@@ -8,5 +8,11 @@
     <ContentPage.BindingContext>
         <taxonomyMobile:FileListModel />
     </ContentPage.BindingContext>
-    <ListView />
+    <ListView ItemsSource="{Binding Files}">
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <TextCell Text="{Binding Path}" />
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
 </ContentPage>
