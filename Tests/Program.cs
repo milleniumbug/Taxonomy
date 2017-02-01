@@ -15,9 +15,9 @@ namespace Tests
 	[TestFixture]
 	class ATest
 	{
-		private string projectDirectory;
+		private readonly Final<string> projectDirectory = new Final<string>();
 		private readonly string taxonomyRelativePath = @"testdata\test.sql";
-		private string taxonomyAbsolutePath;
+		private readonly Final<string> taxonomyAbsolutePath = new Final<string>();
 		private readonly string shortName = "test taxonomy";
 		private readonly string nonexistingPath = @"testdata/does_not_exist.aaaaaa";
 		private Taxonomy taxonomy;
@@ -26,9 +26,9 @@ namespace Tests
 		public void OneTimeSetUp()
 		{
 			string executablePath = new Uri(Assembly.GetExecutingAssembly().CodeBase).AbsolutePath;
-			projectDirectory = new FileInfo(executablePath).Directory.Parent.Parent.FullName;
-			Directory.SetCurrentDirectory(projectDirectory);
-			taxonomyAbsolutePath = Path.Combine(projectDirectory, taxonomyRelativePath);
+			projectDirectory.Value = new FileInfo(executablePath).Directory.Parent.Parent.FullName;
+			Directory.SetCurrentDirectory(projectDirectory.Value);
+			taxonomyAbsolutePath.Value = Path.Combine(projectDirectory.Value, taxonomyRelativePath);
 		}
 
 		[SetUp]
@@ -41,7 +41,7 @@ namespace Tests
 		public void TearDown()
 		{
 			taxonomy.Dispose();
-			System.IO.File.Delete(taxonomyAbsolutePath);
+			System.IO.File.Delete(taxonomyAbsolutePath.Value);
 			System.IO.File.Delete(nonexistingPath);
 		}
 
@@ -156,9 +156,9 @@ namespace Tests
 		[Test]
 		public void TaxonomyProperties()
 		{
-			Assert.AreEqual(taxonomyAbsolutePath, taxonomy.ManagedFile);
+			Assert.AreEqual(taxonomyAbsolutePath.Value, taxonomy.ManagedFile);
 			Assert.AreEqual(shortName, taxonomy.ShortName);
-			Assert.AreEqual(Path.Combine(projectDirectory, @"testdata"), taxonomy.RootPath);
+			Assert.AreEqual(Path.Combine(projectDirectory.Value, @"testdata"), taxonomy.RootPath);
 		}
 
 		[Test]
