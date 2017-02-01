@@ -67,5 +67,16 @@ namespace Tests
 			Assert.AreEqual(1, actual.Count);
 			CollectionAssert.AreEqual(t, actual.First().ToList());
 		}
+
+		[Test]
+		public void HashesAreImmutable()
+		{
+			var firstFile = taxonomy.GetFile(@"testdata\emptyfile.txt");
+			var hash = firstFile.Hash;
+			var original = (byte[])hash.Clone();
+			hash[0] = 12;
+			var actual = firstFile.Hash;
+			CollectionAssert.AreEqual(original, actual);
+		}
 	}
 }
