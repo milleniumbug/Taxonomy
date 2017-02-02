@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="File.cs" />
     <Compile Include="FileWatcher.cs" />
+    <Compile Include="HashingExtensions.cs" />
     <Compile Include="Namespace.cs" />
     <Compile Include="NotAFileException.cs" />
     <Compile Include="Nothing.cs" />

@@ -15,12 +15,12 @@ namespace TaxonomyLib
 			var buffer = new byte[4096];
 			while(true)
 			{
-				var readCount = await inputStream.ReadAsync(buffer, 0, buffer.Length);
+				var readCount = await inputStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
 				if(readCount == 0)
 					break;
-				await Task.Run(() => hash.TransformBlock(buffer, 0, readCount, buffer, 0));
+				hash.TransformBlock(buffer, 0, readCount, buffer, 0);
 			}
-			await Task.Run(() => hash.TransformFinalBlock(buffer, 0, 0));
+			hash.TransformFinalBlock(buffer, 0, 0);
 			return hash.Hash;
 		}
 
