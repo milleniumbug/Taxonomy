@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,10 +46,21 @@ namespace TaxonomyWpf
 			var file = fileEntry?.File;
 			self.tags.Clear();
 			if(file != null)
-				self.tags.AddRange(file.Tags
-					.GroupBy(tag => tag.Namespace)
-					.Select(group => new KeyValuePair<Namespace, IReadOnlyList<Tag>>(group.Key, group.ToList())));
-
+			{
+				Action updateTagDisplay = () =>
+				{
+					self.tags.Clear();
+					self.tags.AddRange(file.Tags
+						.GroupBy(tag => tag.Namespace)
+						.Select(group => new KeyValuePair<Namespace, IReadOnlyList<Tag>>(group.Key, group.ToList())));
+				};
+				var notifyCollectionChanged = file.Tags as INotifyCollectionChanged;
+				if(notifyCollectionChanged != null)
+				{
+					notifyCollectionChanged.CollectionChanged += (sender, args) => updateTagDisplay();
+				}
+				updateTagDisplay();
+			}
 		}
 
 		public TagDisplay()

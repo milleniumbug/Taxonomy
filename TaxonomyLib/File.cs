@@ -62,10 +62,10 @@ namespace TaxonomyLib
 		private readonly Lazy<ICollection<Tag>> tags;
 		public ICollection<Tag> Tags => tags.Value;
 
-		internal File(long id, string rootPath, string path, Lazy<ICollection<Tag>> tagCollection, byte[] hash = null)
+		internal File(long id, string rootPath, string relativePath, Lazy<ICollection<Tag>> tagCollection, byte[] hash = null)
 		{
 			RootPath = rootPath;
-			relativePath = path;
+			this.relativePath = relativePath;
 			tags = tagCollection;
 			if(hash != null)
 			{
