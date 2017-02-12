@@ -25,14 +25,14 @@ namespace TaxonomyLib
 		public string AbsolutePath => Path.Combine(RootPath, RelativePath);
 
 		private string relativePath;
-		public string RelativePath
-		{
-			get
-			{
-				return relativePath;
-			}
+		public string RelativePath => relativePath;
 
-			private set { relativePath = PathExt.GetRelativePath(RootPath, value); }
+		// set a path: can be relative or absolute
+		private void SetPath(string newPath)
+		{
+			relativePath = Path.IsPathRooted(newPath)
+				? PathExt.GetRelativePath(RootPath, newPath)
+				: PathExt.GetRelativePath(RootPath, Path.Combine(Directory.GetCurrentDirectory(), newPath));
 		}
 
 		private string RootPath { get; }
@@ -46,11 +46,17 @@ namespace TaxonomyLib
 				var newFileHash = sha512.ComputeHash(file);
 				if(oldFileHash.SequenceEqual(newFileHash))
 				{
-					RelativePath = newPath;
+					SetPath(newPath);
 					return true;
 				}
 			}
 			return false;
+		}
+
+		public void Move(string newPath)
+		{
+			IO.File.Move(AbsolutePath, newPath);
+			SetPath(newPath);
 		}
 
 		private readonly Lazy<ICollection<Tag>> tags;
@@ -59,10 +65,7 @@ namespace TaxonomyLib
 		internal File(long id, string rootPath, string path, Lazy<ICollection<Tag>> tagCollection, byte[] hash = null)
 		{
 			RootPath = rootPath;
-			if(Path.IsPathRooted(path))
-				RelativePath = path;
-			else
-				RelativePath = Path.Combine(rootPath, path);
+			relativePath = path;
 			tags = tagCollection;
 			if(hash != null)
 			{
