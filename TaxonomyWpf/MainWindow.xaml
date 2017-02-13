@@ -90,7 +90,7 @@
                         <TextBlock Text="{Binding Namespace.Component}" />
                     </HierarchicalDataTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type taxonomyLib:Tag}">
-                        <TextBlock Text="{Binding Name.Name}">
+                        <TextBlock Background="Transparent" Text="{Binding Name.Name}">
                             <TextBlock.InputBindings>
                                 <MouseBinding
                                     Command="{Binding TagDoubleClick, RelativeSource={RelativeSource AncestorType=Window}}"

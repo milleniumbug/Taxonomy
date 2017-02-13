@@ -101,10 +101,15 @@ namespace TaxonomyWpf
 		}
 
 		private Point? tagClickStartPoint;
+		private FrameworkElement draggedItem;
 
 		private void TagPreviewLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			tagClickStartPoint = e.GetPosition(null);
+			// Get the dragged item
+			var treeView = (TreeView)sender;
+			draggedItem =
+				FindAnchestor<TextBlock>((DependencyObject)e.OriginalSource);
 		}
 
 		private void TagPreviewMouseMove(object sender, MouseEventArgs e)
@@ -119,20 +124,15 @@ namespace TaxonomyWpf
 				Math.Abs(distance.X) > SystemParameters.MinimumHorizontalDragDistance &&
 				Math.Abs(distance.Y) > SystemParameters.MinimumVerticalDragDistance)
 			{
-				// Get the dragged ListViewItem
-				var treeView = (TreeView)sender;
-				var item =
-					FindAnchestor<TextBlock>((DependencyObject)e.OriginalSource);
-
 				// Find the data behind the ListViewItem
-				var tag = item?.DataContext as Tag;
+				var tag = draggedItem?.DataContext as Tag;
 
 				if(tag == null)
 					return;
 
 				// Initialize the drag & drop operation
 				var dragData = new DataObject(typeof(Tag), tag);
-				DragDrop.DoDragDrop(item, dragData, DragDropEffects.Move);
+				DragDrop.DoDragDrop(draggedItem, dragData, DragDropEffects.Move);
 
 				tagClickStartPoint = null;
 			}
