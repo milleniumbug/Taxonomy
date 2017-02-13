@@ -109,7 +109,7 @@ namespace TaxonomyWpf
 			// Get the dragged item
 			var treeView = (TreeView)sender;
 			draggedItem =
-				FindAnchestor<TextBlock>((DependencyObject)e.OriginalSource);
+				FindAncestor<TextBlock>((DependencyObject)e.OriginalSource);
 		}
 
 		private void TagPreviewMouseMove(object sender, MouseEventArgs e)
@@ -156,7 +156,7 @@ namespace TaxonomyWpf
 			}
 		}
 
-		private static T FindAnchestor<T>(DependencyObject current)
+		private static T FindAncestor<T>(DependencyObject current)
 			where T : DependencyObject
 		{
 			do
