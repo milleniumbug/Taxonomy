@@ -142,7 +142,7 @@ namespace TaxonomyWpf
 		{
 			if(!e.Data.GetDataPresent(typeof(Tag)) || sender == e.Source)
 			{
-				e.Effects = DragDropEffects.None;;
+				e.Effects = DragDropEffects.Link;
 			}
 		}
 

@@ -152,7 +152,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <local:FileItem
-                            AllowDrop="True"
+                            AllowDrop="{Binding IsDirectory, Converter={x:Static local:BoolNegatingConverter.Default}}"
                             DragEnter="IconEnterDrag"
                             Drop="IconDrop" />
                     </DataTemplate>
