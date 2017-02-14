@@ -39,28 +39,42 @@ namespace TaxonomyWpf
 			set { SetValue(FileProperty, value); }
 		}
 
+		private void UpdateTagDisplay()
+		{
+			tags.Clear();
+			tags.AddRange(File?.File?.Tags
+				.GroupBy(tag => tag.Namespace)
+				.Select(group => new KeyValuePair<Namespace, IReadOnlyList<Tag>>(group.Key, group.ToList()))
+				?? Enumerable.Empty<KeyValuePair<Namespace, IReadOnlyList<Tag>>>());
+		}
+
 		private static void OnFileChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			var self = (TagDisplay)d;
 			var fileEntry = (FileEntry)e.NewValue;
 			var file = fileEntry?.File;
+			var oldFile = ((FileEntry)e.OldValue)?.File;
 			self.tags.Clear();
-			if(file != null)
 			{
-				Action updateTagDisplay = () =>
-				{
-					self.tags.Clear();
-					self.tags.AddRange(file.Tags
-						.GroupBy(tag => tag.Namespace)
-						.Select(group => new KeyValuePair<Namespace, IReadOnlyList<Tag>>(group.Key, group.ToList())));
-				};
-				var notifyCollectionChanged = file.Tags as INotifyCollectionChanged;
+				var notifyCollectionChanged = oldFile?.Tags as INotifyCollectionChanged;
 				if(notifyCollectionChanged != null)
 				{
-					notifyCollectionChanged.CollectionChanged += (sender, args) => updateTagDisplay();
+					notifyCollectionChanged.CollectionChanged -= self.TagCollectionChanged;
 				}
-				updateTagDisplay();
 			}
+			{
+				var notifyCollectionChanged = file?.Tags as INotifyCollectionChanged;
+				if(notifyCollectionChanged != null)
+				{
+					notifyCollectionChanged.CollectionChanged += self.TagCollectionChanged;
+				}
+			}
+			self.UpdateTagDisplay();
+		}
+
+		private void TagCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+		{
+			UpdateTagDisplay();
 		}
 
 		public TagDisplay()

@@ -39,10 +39,14 @@ namespace TaxonomyWpf
 
 		private TaxonomyLib.File file;
 
+		public bool IsDirectory { get; }
+
 		public TaxonomyLib.File File
 		{
 			get
 			{
+				if(IsDirectory)
+					return null;
 				if(file == null)
 				{
 					Taxonomy t;
@@ -84,6 +88,7 @@ namespace TaxonomyWpf
 		{
 			this.file = file;
 			Path = path;
+			IsDirectory = Directory.Exists(path);
 			this.taxonomy = new WeakReference<Taxonomy>(taxonomy);
 		}
 
