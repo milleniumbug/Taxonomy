@@ -161,10 +161,10 @@ namespace TaxonomyWpf
 		{
 			do
 			{
-				var anchestor = current as T;
-				if(anchestor != null)
+				var ancestor = current as T;
+				if(ancestor != null)
 				{
-					return anchestor;
+					return ancestor;
 				}
 				current = VisualTreeHelper.GetParent(current);
 			} while (current != null);
