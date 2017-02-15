@@ -14,5 +14,10 @@ namespace TaxonomyMobile
 		{
 			InitializeComponent();
 		}
+
+		private async void FileTapped(object sender, ItemTappedEventArgs e)
+		{
+			await Navigation.PushModalAsync(new FilePreview());
+		}
 	}
 }

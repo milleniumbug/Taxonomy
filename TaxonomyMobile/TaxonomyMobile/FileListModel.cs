@@ -69,6 +69,8 @@ namespace TaxonomyMobile
 			Path = path;
 		}
 
+		public bool IsDirectory => Directory.Exists(Path);
+
 		public string Path { get; }
 	}
 }

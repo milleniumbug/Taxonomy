@@ -8,7 +8,7 @@
     <ContentPage.BindingContext>
         <taxonomyMobile:FileListModel />
     </ContentPage.BindingContext>
-    <ListView ItemsSource="{Binding Files}">
+    <ListView ItemTapped="FileTapped" ItemsSource="{Binding Files}">
         <ListView.ItemTemplate>
             <DataTemplate>
                 <TextCell Text="{Binding Path}" />
