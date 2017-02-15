@@ -14,7 +14,8 @@ namespace TaxonomyMobile
 {
 	class FileListModel : INotifyPropertyChanged
 	{
-		public ICollection<FileItem> Files { get; } = new ObservableCollection<FileItem>();
+		private readonly ObservableBatchCollection<FileItem> files = new ObservableBatchCollection<FileItem>();
+		public ICollection<FileItem> Files => files;
 
 		private string path;
 		private Taxonomy managedTaxonomy;
@@ -27,11 +28,8 @@ namespace TaxonomyMobile
 			var entries = directories
 				.Concat(files)
 				.Select(fileInfo => new FileItem(fileInfo.FullName));
-			Files.Clear();
-			foreach(var fileItem in entries)
-			{
-				Files.Add(fileItem);
-			}
+			this.files.Clear();
+			this.files.AddRange(entries);
 		}
 
 		public string TaxonomyShortName => ManagedTaxonomy?.ShortName ?? "Files";
