@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Cache.cs" />
+    <Compile Include="Final.cs" />
     <Compile Include="LinqExtensions.cs" />
     <Compile Include="ObservableBatchCollection.cs" />
     <Compile Include="ObservableSet.cs" />
